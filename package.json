@@ -1,0 +1,25 @@
+{
+  "name": "koa-static",
+  "description": "Static file serving middleware for koa",
+  "repository": "koajs/static",
+  "version": "1.0.0",
+  "keywords": [
+    "koa",
+    "middleware",
+    "file",
+    "static",
+    "sendfile"
+  ],
+  "files": [
+    "index.js"
+  ],
+  "devDependencies": {
+    "koa": "0.0.1"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "should": "~1.2.2",
+    "mocha": "~1.12.0",
+    "supertest": "~0.7.1"
+  }
+}
