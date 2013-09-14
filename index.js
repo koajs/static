@@ -42,9 +42,10 @@ function serve(root, opts) {
 
   return function(next){
     return function *(){
-      if ('GET' != this.method && 'HEAD' != this.method) return next();
+      yield next;
 
-      // TODO: move this stuff into a lib for this.sendfile() etc
+      if (!this.idempotent || this.body) return;
+
       var path = this.path;
       var trailingSlash = '/' == path[path.length - 1];
 

@@ -4,6 +4,26 @@ var serve = require('..');
 var koa = require('koa');
 
 describe('serve(root)', function(){
+  describe('when upstream middleware respond', function(){
+    it('should do nothing', function(done){
+      var app = koa();
+      
+      app.use(serve('test/fixtures'));
+
+      app.use(function(next){
+        return function *(){
+          yield next;
+          this.body = 'hey';
+        }
+      });
+
+      request(app.listen())
+      .get('/hello.txt')
+      .expect(200)
+      .expect('hey', done);
+    })
+  })
+
   describe('the path is valid', function(){
     it('should serve the file', function(done){
       var app = koa();
