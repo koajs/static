@@ -27,7 +27,7 @@ describe('serve(root)', function(){
         request(app.listen())
         .get('/')
         .expect(200)
-        .expect('Content-Type', 'text/plain; charset=UTF-8')
+        .expect('Content-Type', 'text/plain')
         .expect('text index', done);
       })
     })
@@ -41,7 +41,7 @@ describe('serve(root)', function(){
         request(app.listen())
         .get('/world/')
         .expect(200)
-        .expect('Content-Type', 'text/html; charset=UTF-8')
+        .expect('Content-Type', 'text/html')
         .expect('html index', done);
       })
     })
@@ -56,7 +56,7 @@ describe('serve(root)', function(){
 
         request(app.listen())
         .get('/world')
-        .expect(301)
+        .expect(303)
         .expect('Location', '/world/', done);
       })
     })
