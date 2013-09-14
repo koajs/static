@@ -2,7 +2,7 @@
   "name": "koa-static",
   "description": "Static file serving middleware for koa",
   "repository": "koajs/static",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "keywords": [
     "koa",
     "middleware",
