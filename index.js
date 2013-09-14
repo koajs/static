@@ -87,6 +87,7 @@ function serve(root, opts) {
       }
 
       // stream
+      this.set('Last-Modified', stats.mtime.toUTCString());
       this.type = extname(path);
       this.body = fs.createReadStream(path);
     }
