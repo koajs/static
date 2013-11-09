@@ -7,14 +7,12 @@ describe('serve(root)', function(){
   describe('when upstream middleware respond', function(){
     it('should do nothing', function(done){
       var app = koa();
-      
+
       app.use(serve('test/fixtures'));
 
-      app.use(function(next){
-        return function *(){
-          yield next;
-          this.body = 'hey';
-        }
+      app.use(function *(next){
+        yield next;
+        this.body = 'hey';
       });
 
       request(app.listen())
@@ -27,7 +25,7 @@ describe('serve(root)', function(){
   describe('the path is valid', function(){
     it('should serve the file', function(done){
       var app = koa();
-      
+
       app.use(serve('test/fixtures'));
 
       request(app.listen())
@@ -36,18 +34,18 @@ describe('serve(root)', function(){
       .expect('world', done);
     })
   })
-  
+
   describe('.index', function(){
     describe('when present', function(){
       it('should alter the index file supported', function(done){
         var app = koa();
-        
+
         app.use(serve('test/fixtures', { index: 'index.txt' }));
 
         request(app.listen())
         .get('/')
         .expect(200)
-        .expect('Content-Type', 'text/plain')
+        .expect('Content-Type', 'text/plain; charset=utf-8')
         .expect('text index', done);
       })
     })
@@ -55,13 +53,13 @@ describe('serve(root)', function(){
     describe('when omitted', function(){
       it('should use index.html', function(done){
         var app = koa();
-        
+
         app.use(serve('test/fixtures'));
 
         request(app.listen())
         .get('/world/')
         .expect(200)
-        .expect('Content-Type', 'text/html')
+        .expect('Content-Type', 'text/html; charset=utf-8')
         .expect('html index', done);
       })
     })
@@ -71,7 +69,7 @@ describe('serve(root)', function(){
     describe('and an index file is present', function(){
       it('should redirect missing / to -> / when index is found', function(done){
         var app = koa();
-        
+
         app.use(serve('test/fixtures'));
 
         request(app.listen())
@@ -84,7 +82,7 @@ describe('serve(root)', function(){
     describe('and no index file is present', function(){
       it('should not redirect', function(done){
         var app = koa();
-        
+
         app.use(serve('test/fixtures'));
 
         request(app.listen())

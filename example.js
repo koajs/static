@@ -8,12 +8,10 @@ var app = koa();
 
 app.use(serve('.'));
 
-app.use(function(next){
-  return function *(){
-    yield next;
-    if ('/' == this.path) {
-      this.body = 'Try `GET /package.json`';
-    }
+app.use(function *(next){
+  yield next;
+  if ('/' == this.path) {
+    this.body = 'Try `GET /package.json`';
   }
 })
 
