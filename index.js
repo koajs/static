@@ -43,7 +43,8 @@ function serve(root, opts) {
   return function *(next){
     yield next;
 
-    if (!this.idempotent || this.body) return;
+    // response is already handled
+    if (!this.idempotent || this.body != null || this.status != 200) return;
 
     var path = this.path;
     var trailingSlash = '/' == path[path.length - 1];

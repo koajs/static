@@ -91,4 +91,46 @@ describe('serve(root)', function(){
       })
     })
   })
+
+  describe('when path is not a file', function(){
+    it('should 404', function(done){
+      var app = koa();
+
+      app.use(serve('test/fixtures'));
+
+      request(app.listen())
+      .get('/something')
+      .expect(404, done);
+    })
+  })
+
+  describe('it should not handle the request', function(){
+    it('when status=204', function(done){
+      var app = koa();
+
+      app.use(serve('test/fixtures'));
+
+      app.use(function *(next){
+        this.status = 204;
+      })
+
+      request(app.listen())
+      .get('/something%%%/')
+      .expect(204, done);
+    })
+
+    it('when body=""', function(done){
+      var app = koa();
+
+      app.use(serve('test/fixtures'));
+
+      app.use(function *(next){
+        this.body = '';
+      })
+
+      request(app.listen())
+      .get('/something%%%/')
+      .expect(200, done);
+    })
+  })
 })
