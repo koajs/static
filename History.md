@@ -1,4 +1,11 @@
 
+1.3.0 / 2013-12-11
+==================
+
+ * refactor to use koa-send
+ * rename maxAge -> maxage
+ * fix: don't bother responding if response already "handled"
+
 1.2.0 / 2013-09-14 
 ==================
 
