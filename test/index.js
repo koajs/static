@@ -65,32 +65,32 @@ describe('serve(root)', function(){
     })
   })
 
-  describe('when path is a directory', function(){
-    describe('and an index file is present', function(){
-      it('should redirect missing / to -> / when index is found', function(done){
-        var app = koa();
+  // describe('when path is a directory', function(){
+  //   describe('and an index file is present', function(){
+  //     it('should redirect missing / to -> / when index is found', function(done){
+  //       var app = koa();
 
-        app.use(serve('test/fixtures'));
+  //       app.use(serve('test/fixtures'));
 
-        request(app.listen())
-        .get('/world')
-        .expect(303)
-        .expect('Location', '/world/', done);
-      })
-    })
+  //       request(app.listen())
+  //       .get('/world')
+  //       .expect(303)
+  //       .expect('Location', '/world/', done);
+  //     })
+  //   })
 
-    describe('and no index file is present', function(){
-      it('should not redirect', function(done){
-        var app = koa();
+  //   describe('and no index file is present', function(){
+  //     it('should not redirect', function(done){
+  //       var app = koa();
 
-        app.use(serve('test/fixtures'));
+  //       app.use(serve('test/fixtures'));
 
-        request(app.listen())
-        .get('/')
-        .expect(404, done);
-      })
-    })
-  })
+  //       request(app.listen())
+  //       .get('/')
+  //       .expect(404, done);
+  //     })
+  //   })
+  // })
 
   describe('when path is not a file', function(){
     it('should 404', function(done){
