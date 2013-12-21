@@ -32,6 +32,13 @@ function serve(root, opts) {
   opts.root = root;
   opts.index = opts.index || 'index.html';
 
+  if (!opts.defer) {
+    return function *(next){
+      if (this.idempotent && (yield send(this, this.path, opts))) return;
+      yield next;
+    }
+  }
+
   return function *(next){
     yield next;
 

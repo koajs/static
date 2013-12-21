@@ -22,6 +22,9 @@
   "license": "MIT",
   "dependencies": {
     "debug": "*",
-    "koa-send": "~1.0.0"
+    "koa-send": "~1.1.1"
+  },
+  "scripts": {
+    "test": "make test"
   }
 }

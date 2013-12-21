@@ -1,3 +1,7 @@
+1.4.0 / 2013-12-20
+==================
+
+ * add: defer option - semi-breaking change
 
 1.3.0 / 2013-12-11
 ==================
@@ -6,17 +10,17 @@
  * rename maxAge -> maxage
  * fix: don't bother responding if response already "handled"
 
-1.2.0 / 2013-09-14 
+1.2.0 / 2013-09-14
 ==================
 
  * add Last-Modified. Closes #5
 
-1.1.1 / 2013-09-13 
+1.1.1 / 2013-09-13
 ==================
 
  * fix upstream responses
 
-1.1.0 / 2013-09-13 
+1.1.0 / 2013-09-13
 ==================
 
  * rewrite without send
