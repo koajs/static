@@ -1,4 +1,4 @@
-# koa-static
+# koa-static [![Build Status](https://travis-ci.org/koajs/static.png)](https://travis-ci.org/koajs/static)
 
  Static file serving middleware.
 
