@@ -43,7 +43,7 @@ function serve(root, opts) {
     yield next;
 
     // response is already handled
-    if (!this.idempotent || this.body != null || this.status != 200) return;
+    if (!this.idempotent || this.body != null || this.status != null) return;
 
     yield send(this, this.path, opts);
   }
