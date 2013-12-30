@@ -1,5 +1,4 @@
-
-# koa-static
+# koa-static [![Build Status](https://travis-ci.org/koajs/static.png)](https://travis-ci.org/koajs/static)
 
  Static file serving middleware.
 
@@ -19,7 +18,7 @@ $ npm install koa-static
 ## Example
 
 ```js
-var serve = require('./');
+var serve = require('koa-static');
 var koa = require('koa');
 var app = koa();
 
