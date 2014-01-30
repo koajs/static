@@ -6,7 +6,6 @@
 var assert = require('assert');
 var debug = require('debug')('koa-static');
 var send = require('koa-send');
-var path = require('path');
 
 /**
  * Expose `serve()`.
@@ -30,7 +29,7 @@ function serve(root, opts) {
 
   // options
   debug('static "%s" %j', root, opts);
-  opts.root = path.normalize(root);
+  opts.root = root;
   opts.index = opts.index || 'index.html';
 
   if (!opts.defer) {
