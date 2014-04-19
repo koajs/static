@@ -36,7 +36,7 @@ function serve(root, opts) {
     return function *static(next){
       if (this.idempotent && (yield send(this, this.path, opts))) return;
       yield next;
-    }
+    };
   }
 
   return function *static(next){
@@ -46,5 +46,5 @@ function serve(root, opts) {
     if (!this.idempotent || this.body != null || this.status != null) return;
 
     yield send(this, this.path, opts);
-  }
+  };
 }
