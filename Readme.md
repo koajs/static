@@ -4,7 +4,7 @@
 
 ## Installation
 
-```js
+```bash
 $ npm install koa-static
 ```
 
