@@ -1,4 +1,11 @@
 
+1.4.4 / 2014-05-04
+==================
+
+ * Add two missing semicolons. Closes #24
+ * Use bash syntax highlighting for install command. Closes #23
+ * named generator function to help debugging. Closes #20
+
 1.4.3 / 2014-02-11
 ==================
 
