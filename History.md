@@ -1,4 +1,9 @@
 
+1.4.5 / 2014-05-05
+==================
+
+ * Fix response already handled logic - Koajs now defaults status == 404. See  koajs/koa#269
+
 1.4.4 / 2014-05-04
 ==================
 
