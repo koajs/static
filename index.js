@@ -33,13 +33,13 @@ function serve(root, opts) {
   opts.index = opts.index || 'index.html';
 
   if (!opts.defer) {
-    return function *staticMiddleware(next){
+    return function *static(next){
       if (this.idempotent && (yield send(this, this.path, opts))) return;
       yield next;
     };
   }
 
-  return function *staticMiddleware(next){
+  return function *static(next){
     yield next;
 
     // response is already handled
