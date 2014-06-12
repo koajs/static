@@ -48,6 +48,31 @@ describe('serve(root)', function(){
       })
     })
 
+    describe('.maxage', function() {
+      describe('when present', function(done) {
+        var app = koa();
+
+        app.use(serve('test/fixtures'), { maxage: 60 });
+
+        request(app.listen())
+        .get('/hello.txt')
+        .expect(200)
+        .expect('Cache-Control', 'public, max-age=60')
+        .expect('world', done);
+      })
+      describe('when not present', function(done) {
+        var app = koa();
+
+        app.use(serve('test/fixtures'));
+
+        request(app.listen())
+        .get('/hello.txt')
+        .expect(200)
+        .expect('Cache-Control', '')
+        .expect('world', done);
+      })
+    })
+
     describe('.index', function(){
       describe('when present', function(){
         it('should alter the index file supported', function(done){

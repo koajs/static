@@ -45,6 +45,10 @@ function serve(root, opts) {
     // response is already handled
     if (!this.idempotent || this.body != null || this.status != 404) return;
 
+    if (opts.maxage) {
+      this.set('Cache-Control', 'public, max-age=' + opts.maxage);
+    }
+
     yield send(this, this.path, opts);
   };
 }
