@@ -14,6 +14,7 @@
     "index.js"
   ],
   "devDependencies": {
+    "istanbul-harmony": "0",
     "koa": "0",
     "should": "2",
     "mocha": "1",
@@ -25,6 +26,8 @@
     "koa-send": "~1.3.0"
   },
   "scripts": {
-    "test": "make test"
+    "test": "mocha --harmony-generators --require should --reporter spec",
+    "test-cov": "node --harmony-generators ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- --require should",
+    "test-travis": "node --harmony-generators ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly -- --require should"
   }
 }
