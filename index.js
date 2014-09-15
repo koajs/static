@@ -35,12 +35,12 @@ function serve(root, opts) {
   if (!opts.defer) {
     return function *serve(next){
       if (this.idempotent && (yield send(this, this.path, opts))) return;
-      yield next;
+      yield* next;
     };
   }
 
   return function *serve(next){
-    yield next;
+    yield* next;
 
     // response is already handled
     if (!this.idempotent || this.body != null || this.status != 404) return;
