@@ -3,6 +3,7 @@
  * Module dependencies.
  */
 
+var resolve = require('path').resolve;
 var assert = require('assert');
 var debug = require('debug')('koa-static');
 var send = require('koa-send');
@@ -29,7 +30,7 @@ function serve(root, opts) {
 
   // options
   debug('static "%s" %j', root, opts);
-  opts.root = root;
+  opts.root = resolve(root);
   opts.index = opts.index || 'index.html';
 
   if (!opts.defer) {

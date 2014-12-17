@@ -5,6 +5,18 @@ var koa = require('koa');
 
 describe('serve(root)', function(){
   describe('when defer: false', function(){
+    describe('when root = "."', function(){
+      it('should serve from cwd', function(done){
+        var app = koa();
+
+        app.use(serve('.'));
+
+        request(app.listen())
+        .get('/package.json')
+        .expect(200, done);
+      })
+    })
+
     describe('when path is not a file', function(){
       it('should 404', function(done){
         var app = koa();
