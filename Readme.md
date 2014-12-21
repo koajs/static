@@ -16,7 +16,18 @@
 $ npm install koa-static
 ```
 
-## Options
+## API
+
+```js
+var koa = require('koa');
+var app = koa();
+app.use(require('koa-static')(root, opts));
+```
+
+* `root` root directory string. nothing above this root directory can be served
+* `opts` options object.
+
+### Options
 
  - `maxage` Browser cache max-age in milliseconds. defaults to 0
  - `hidden` Allow transfer of hidden files. defaults to false
