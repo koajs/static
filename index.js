@@ -35,7 +35,9 @@ function serve(root, opts) {
 
   if (!opts.defer) {
     return function *serve(next){
-      if (this.idempotent && (yield send(this, this.path, opts))) return;
+      if (this.method == 'HEAD' || this.method == 'GET') {
+        if (yield send(this, this.path, opts)) return;
+      }
       yield* next;
     };
   }
@@ -43,8 +45,9 @@ function serve(root, opts) {
   return function *serve(next){
     yield* next;
 
+    if (this.method != 'HEAD' && this.method != 'GET') return;
     // response is already handled
-    if (!this.idempotent || this.body != null || this.status != 404) return;
+    if (this.body != null || this.status != 404) return;
 
     yield send(this, this.path, opts);
   };

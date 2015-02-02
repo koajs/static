@@ -89,6 +89,18 @@ describe('serve(root)', function(){
         })
       })
     })
+
+    describe('when method is not `GET` or `HEAD`', function(){
+      it('should 404', function(done){
+        var app = koa();
+
+        app.use(serve('test/fixtures'));
+
+        request(app.listen())
+        .post('/hello.txt')
+        .expect(404, done);
+      })
+    })
   })
 
   describe('when defer: true', function(){
@@ -234,6 +246,20 @@ describe('serve(root)', function(){
         request(app.listen())
         .get('/something%%%/')
         .expect(200, done);
+      })
+    })
+
+    describe('when method is not `GET` or `HEAD`', function(){
+      it('should 404', function(done){
+        var app = koa();
+
+        app.use(serve('test/fixtures', {
+          defer: true
+        }));
+
+        request(app.listen())
+        .post('/hello.txt')
+        .expect(404, done);
       })
     })
   })
