@@ -58,14 +58,12 @@ function serve(root, opts) {
   };
 
   function *invokeCallback(ctx, path) {
-    if (path) {
-      if (typeof opts.callback==='function') {
-        if (opts.callback.constructor.name === 'GeneratorFunction') {
-          yield opts.callback(ctx, path);
-        }
-        else {
-          opts.callback(ctx, path);
-        }
+    if (path && typeof opts.callback==='function') {
+      if (opts.callback.constructor.name === 'GeneratorFunction') {
+        yield opts.callback(ctx, path);
+      }
+      else {
+        opts.callback(ctx, path);
       }
     }
   }
