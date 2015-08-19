@@ -38,14 +38,7 @@ function serve(root, opts) {
       if (this.method == 'HEAD' || this.method == 'GET') {
         var path = yield send(this, this.path, opts)
         if (path) {
-          if (typeof opts.callback==='function') {
-            if (opts.callback.constructor.name === 'GeneratorFunction') {
-              yield opts.callback(this, path);
-            }
-            else {
-              opts.callback(this, path);
-            }
-          }
+          yield invokeCallback(this, path);
           return;
         }
       }
@@ -60,6 +53,20 @@ function serve(root, opts) {
     // response is already handled
     if (this.body != null || this.status != 404) return;
 
-    yield send(this, this.path, opts);
+    var path = yield send(this, this.path, opts);
+    yield invokeCallback(this, path);
   };
+
+  function *invokeCallback(ctx, path) {
+    if (path) {
+      if (typeof opts.callback==='function') {
+        if (opts.callback.constructor.name === 'GeneratorFunction') {
+          yield opts.callback(ctx, path);
+        }
+        else {
+          opts.callback(ctx, path);
+        }
+      }
+    }
+  }
 }
