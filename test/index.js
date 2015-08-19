@@ -101,6 +101,24 @@ describe('serve(root)', function(){
         .expect(404, done);
       })
     })
+
+    describe('when callback is specified', function(){
+      it('should perform callback', function(done){
+        var app = koa();
+
+        app.use(serve('test/fixtures', {
+          callback: function*(ctx, path) {
+            ctx.body = path;
+          }
+        }));
+
+        request(app.listen())
+        .get('/hello.txt')
+        .expect(200)
+        .expect(__dirname + '/fixtures/hello.txt', done);
+      })
+    })
+
   })
 
   describe('when defer: true', function(){
@@ -262,5 +280,7 @@ describe('serve(root)', function(){
         .expect(404, done);
       })
     })
+
   })
+
 })

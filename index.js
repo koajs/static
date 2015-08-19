@@ -36,7 +36,18 @@ function serve(root, opts) {
   if (!opts.defer) {
     return function *serve(next){
       if (this.method == 'HEAD' || this.method == 'GET') {
-        if (yield send(this, this.path, opts)) return;
+        var path = yield send(this, this.path, opts)
+        if (path) {
+          if (typeof opts.callback==='function') {
+            if (opts.callback.constructor.name === 'GeneratorFunction') {
+              yield opts.callback(this, path);
+            }
+            else {
+              opts.callback(this, path);
+            }
+          }
+          return;
+        }
       }
       yield* next;
     };
