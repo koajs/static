@@ -73,6 +73,29 @@ describe('serve(root)', function(){
             .expect('Cache-Control', 'max-age=3600')
             .expect(200, done);
       })
+      it('can override cache-control header per path', function(done){
+        var app = koa();
+
+        app.use(serve('test/fixtures', {
+          updateOpts: function(path, opts) {
+            opts.maxage = path === '/hello.txt' ? 0 : 3600 * 1000;
+          }
+        }));
+
+        var req = request(app.listen());
+
+        req.get('/index.txt')
+            .expect('Cache-Control', 'max-age=3600')
+            .expect(200, function(err) {
+                if (err) {
+                    return done(err);
+                }
+
+              req.get('/hello.txt')
+                  .expect('Cache-Control', 'max-age=0')
+                  .expect(200, done);
+            });
+      })
     })
 
     describe('.index', function(){
@@ -167,6 +190,30 @@ describe('serve(root)', function(){
             .get('/hello.txt')
             .expect('Cache-Control', 'max-age=3600')
             .expect(200, done);
+      })
+      it('can override cache-control header per path', function(done){
+        var app = koa();
+
+        app.use(serve('test/fixtures', {
+          defer: true,
+          updateOpts: function(path, opts) {
+            opts.maxage = path === '/hello.txt' ? 0 : 3600 * 1000;
+          }
+        }));
+
+        var req = request(app.listen());
+
+        req.get('/index.txt')
+            .expect('Cache-Control', 'max-age=3600')
+            .expect(200, function(err) {
+              if (err) {
+                return done(err);
+              }
+
+              req.get('/hello.txt')
+                  .expect('Cache-Control', 'max-age=0')
+                  .expect(200, done);
+            });
       })
     })
 

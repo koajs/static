@@ -36,6 +36,9 @@ function serve(root, opts) {
   if (!opts.defer) {
     return function *serve(next){
       if (this.method == 'HEAD' || this.method == 'GET') {
+        if (opts.updateOpts) {
+          opts.updateOpts(this.path, opts);
+        }
         if (yield send(this, this.path, opts)) return;
       }
       yield* next;
@@ -49,6 +52,9 @@ function serve(root, opts) {
     // response is already handled
     if (this.body != null || this.status != 404) return;
 
+    if (opts.updateOpts) {
+      opts.updateOpts(this.path, opts);
+    }
     yield send(this, this.path, opts);
   };
 }
