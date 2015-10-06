@@ -33,6 +33,7 @@ app.use(require('koa-static')(root, opts));
  - `hidden` Allow transfer of hidden files. defaults to false
  - `index` Default file name, defaults to 'index.html'
  - `defer` If true, serves after `yield next`, allowing any downstream middleware to respond first.
+ - `format` If true, format the path to serve static file servers and not require a trailing slash for directories, so that you can do both `/directory` and `/directory/`
 
 ## Example
 

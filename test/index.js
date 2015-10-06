@@ -262,5 +262,34 @@ describe('serve(root)', function(){
         .expect(404, done);
       })
     })
+
+    describe('when format: true', function() {
+      it('should send the html page', function (done) {
+        var app = koa();
+
+        app.use(serve('test/fixtures', {
+          format: true
+        }));
+
+        request(app.listen())
+          .get('/world')
+          .expect(200)
+          .expect('html index', done);
+      })
+    })
+
+    describe('when format: false', function() {
+      it('should 404', function (done) {
+        var app = koa();
+
+        app.use(serve('test/fixtures', {
+          format: false
+        }));
+
+        request(app.listen())
+          .get('/world')
+          .expect(404, done);
+      })
+    })
   })
 })

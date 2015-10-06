@@ -56,11 +56,11 @@ function serve(root, opts) {
   // and not require a trailing slash for directories,
   // so that you can do both `/directory` and `/directory/`
   function formatPath(path) {
-    if (opts.disableFormat) {
-      return path;
-    } else {
+    if (opts.format) {
       var trailingSlash = '/' == path[path.length - 1];
       return trailingSlash ? path : path + '/';
+    } else {
+      return path;
     }
   }
 }
