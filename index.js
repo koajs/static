@@ -36,7 +36,11 @@ function serve(root, opts) {
   if (!opts.defer) {
     return function *serve(next){
       if (this.method == 'HEAD' || this.method == 'GET') {
-        if (yield send(this, this.path, opts)) return;
+        var path = yield send(this, this.path, opts)
+        if (path) {
+          yield invokeCallback(this, path);
+          return;
+        }
       }
       yield* next;
     };
@@ -49,6 +53,18 @@ function serve(root, opts) {
     // response is already handled
     if (this.body != null || this.status != 404) return;
 
-    yield send(this, this.path, opts);
+    var path = yield send(this, this.path, opts);
+    yield invokeCallback(this, path);
   };
+
+  function *invokeCallback(ctx, path) {
+    if (path && typeof opts.callback==='function') {
+      if (opts.callback.constructor.name === 'GeneratorFunction') {
+        yield opts.callback(ctx, path);
+      }
+      else {
+        opts.callback(ctx, path);
+      }
+    }
+  }
 }

@@ -33,6 +33,7 @@ app.use(require('koa-static')(root, opts));
  - `hidden` Allow transfer of hidden files. defaults to false
  - `index` Default file name, defaults to 'index.html'
  - `defer` If true, serves after `yield next`, allowing any downstream middleware to respond first.
+ - `callback(ctx, path)` The regular function or the generator function, invoked when serving a static file.
 
 ## Example
 
