@@ -36,7 +36,7 @@ function serve(root, opts) {
   if (!opts.defer) {
     return function *serve(next){
       if (this.method == 'HEAD' || this.method == 'GET') {
-        if (yield send(this, this.path, opts)) return;
+        yield send(this, this.path, opts)
       }
       yield* next;
     };
