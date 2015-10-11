@@ -37,7 +37,7 @@ describe('serve(root)', function(){
 
         app.use(function *(next){
           yield next;
-          this.body = 'hey';
+          this.body = 'world';
         });
 
         request(app.listen())
