@@ -37,7 +37,7 @@ function serve(root, opts) {
   if (!opts.defer) {
     return function *serve(next){
       if (this.method == 'HEAD' || this.method == 'GET') {
-        if (yield send(this, this.path, opts)) return;
+        if (yield send(this, formatPath(this.path), opts)) return;
       }
       yield* next;
     };
@@ -50,6 +50,18 @@ function serve(root, opts) {
     // response is already handled
     if (this.body != null || this.status != 404) return;
 
-    yield send(this, this.path, opts);
+    yield send(this, formatPath(this.path), opts);
   };
+
+  // Format the path to serve static file servers
+  // and not require a trailing slash for directories,
+  // so that you can do both `/directory` and `/directory/`
+  function formatPath(path) {
+    if (opts.format) {
+      var trailingSlash = '/' == path[path.length - 1];
+      return trailingSlash ? path : path + '/';
+    } else {
+      return path;
+    }
+  }
 }
