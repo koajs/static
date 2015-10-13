@@ -22,7 +22,7 @@
   "license": "MIT",
   "dependencies": {
     "debug": "*",
-    "koa-send": "~1.3.0"
+    "koa-send": "~2.0.0"
   },
   "scripts": {
     "test": "mocha --harmony --reporter spec",
