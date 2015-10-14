@@ -25,7 +25,6 @@ module.exports = serve;
 
 function serve(root, opts) {
   opts = opts || {};
-  if (opts.format !== false) opts.format = true;
 
   assert(root, 'root directory is required to serve files');
 
