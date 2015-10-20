@@ -1,7 +1,7 @@
 
-var serve = require('./');
-var koa = require('koa');
-var app = koa();
+const serve = require('./');
+const koa = require('koa');
+const app = koa();
 
 // $ GET /package.json
 // $ GET /
