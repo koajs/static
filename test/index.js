@@ -1,4 +1,6 @@
 
+'use strict';
+
 var request = require('supertest');
 var serve = require('..');
 var koa = require('koa');
