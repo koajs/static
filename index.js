@@ -3,10 +3,10 @@
  * Module dependencies.
  */
 
-var resolve = require('path').resolve;
-var assert = require('assert');
-var debug = require('debug')('koa-static');
-var send = require('koa-send');
+const resolve = require('path').resolve;
+const assert = require('assert');
+const debug = require('debug')('koa-static');
+const send = require('koa-send');
 
 /**
  * Expose `serve()`.
