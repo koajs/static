@@ -1,4 +1,6 @@
 
+'use strict';
+
 const serve = require('./');
 const koa = require('koa');
 const app = koa();
