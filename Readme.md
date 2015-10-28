@@ -20,7 +20,7 @@ $ npm install koa-static
 
 ```js
 var koa = require('koa');
-var app = koa();
+var app = new koa();
 app.use(require('koa-static')(root, opts));
 ```
 
@@ -32,14 +32,14 @@ app.use(require('koa-static')(root, opts));
  - `maxage` Browser cache max-age in milliseconds. defaults to 0
  - `hidden` Allow transfer of hidden files. defaults to false
  - `index` Default file name, defaults to 'index.html'
- - `defer` If true, serves after `yield next`, allowing any downstream middleware to respond first.
+ - `defer` If true, serves after `next(ctx)`, allowing any downstream middleware to respond first.
 
 ## Example
 
 ```js
 var serve = require('koa-static');
 var koa = require('koa');
-var app = koa();
+var app = new koa();
 
 // $ GET /package.json
 app.use(serve('.'));

@@ -15,14 +15,14 @@
   ],
   "devDependencies": {
     "istanbul-harmony": "0",
-    "koa": "1",
+    "koa": ">=2.0.0-alpha.2",
     "mocha": "2",
     "supertest": "1"
   },
   "license": "MIT",
   "dependencies": {
     "debug": "*",
-    "koa-send": "~2.0.1"
+    "koa-send": "~3.1.0"
   },
   "scripts": {
     "test": "mocha --harmony --reporter spec",
