@@ -3,17 +3,17 @@
 
 const serve = require('./');
 const koa = require('koa');
-const app = koa();
+const app = new koa();
 
 // $ GET /package.json
 // $ GET /
 
 app.use(serve('.'));
 
-app.use(function *(next){
-  yield next;
+app.use(function (ctx, next){
+  next(ctx);
   if ('/' == this.path) {
-    this.body = 'Try `GET /package.json`';
+    ctx.body = 'Try `GET /package.json`';
   }
 })
 
