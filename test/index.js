@@ -90,6 +90,18 @@ describe('serve(root)', function(){
           .expect('html index', done);
         })
       })
+
+      describe('when disabled', function(){
+        it('should not use index.html', function(done){
+          const app = koa();
+
+          app.use(serve('test/fixtures', { index: false }));
+
+          request(app.listen())
+          .get('/world/')
+          .expect(404, done);
+        })
+      })
     })
 
     describe('when method is not `GET` or `HEAD`', function(){
