@@ -36,7 +36,7 @@ function serve(root, opts) {
   opts.index = opts.index || 'index.html';
 
   if (!opts.defer) {
-    return function(ctx, next){
+    return function serve(ctx, next){
       if (ctx.method == 'HEAD' || ctx.method == 'GET') {
         return send(ctx, ctx.path, opts).then(function(res){
           return res ? null : next(ctx);
@@ -46,7 +46,7 @@ function serve(root, opts) {
     };
   }
 
-  return function(ctx, next){
+  return function serve(ctx, next){
     return next(ctx).then(function(){
       if (ctx.method != 'HEAD' && ctx.method != 'GET') return;
       // response is already handled
