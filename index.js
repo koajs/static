@@ -33,7 +33,7 @@ function serve(root, opts) {
   // options
   debug('static "%s" %j', root, opts);
   opts.root = resolve(root);
-  opts.index = opts.index || 'index.html';
+  if (opts.index !== false) opts.index = opts.index || 'index.html';
 
   if (!opts.defer) {
     return function serve(ctx, next){
