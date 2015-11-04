@@ -94,7 +94,7 @@ describe('serve(root)', function(){
 
       describe('when disabled', function(){
         it('should not use index.html', function(done){
-          const app = koa();
+          const app = new koa();
 
           app.use(serve('test/fixtures', { index: false }));
 
