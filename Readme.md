@@ -7,8 +7,7 @@
 [![License][license-image]][license-url]
 [![Downloads][downloads-image]][downloads-url]
 
-
- Static file serving middleware.
+ Koa static file serving middleware, wrapper for [`koa-send`](https://github.com/koajs/send).
 
 ## Installation
 
