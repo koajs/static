@@ -32,6 +32,7 @@ app.use(require('koa-static')(root, opts));
  - `hidden` Allow transfer of hidden files. defaults to false
  - `index` Default file name, defaults to 'index.html'
  - `defer` If true, serves after `yield next`, allowing any downstream middleware to respond first.
+ - `gzip`  Try to serve the gzipped version of a file automatically when gzip is supported by a client and if the requested file with .gz extension exists. defaults to true.
 
 ## Example
 
