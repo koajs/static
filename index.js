@@ -26,19 +26,21 @@ module.exports = serve;
  */
 
 function serve(root, opts) {
-  opts = opts || {};
-
   assert(root, 'root directory is required to serve files');
+
+  var options = Object.assign({
+    root: resolve(root),
+    index: 'index.html'
+  }, opts);
+
 
   // options
   debug('static "%s" %j', root, opts);
-  opts.root = resolve(root);
-  if (opts.index !== false) opts.index = opts.index || 'index.html';
 
-  if (!opts.defer) {
+  if (!options.defer) {
     return function *serve(next){
       if (this.method == 'HEAD' || this.method == 'GET') {
-        if (yield send(this, this.path, opts)) return;
+        if (yield send(this, this.path, options)) return;
       }
       yield* next;
     };
@@ -51,6 +53,6 @@ function serve(root, opts) {
     // response is already handled
     if (this.body != null || this.status != 404) return;
 
-    yield send(this, this.path, opts);
+    yield send(this, this.path, options);
   };
 }
