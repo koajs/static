@@ -1,4 +1,3 @@
-
 'use strict';
 
 /**
@@ -36,21 +35,21 @@ function serve(root, opts) {
   if (opts.index !== false) opts.index = opts.index || 'index.html';
 
   if (!opts.defer) {
-    return function *serve(next){
-      if (this.method == 'HEAD' || this.method == 'GET') {
-        if (yield send(this, this.path, opts)) return;
+    return async function serve(ctx, next){
+      if (ctx.method == 'HEAD' || ctx.method == 'GET') {
+        if (await send(ctx, ctx.path, opts)) return;
       }
-      yield* next;
+      await next();
     };
   }
 
-  return function *serve(next){
-    yield* next;
+  return async function serve(ctx, next){
+    await next();
 
-    if (this.method != 'HEAD' && this.method != 'GET') return;
+    if (ctx.method != 'HEAD' && ctx.method != 'GET') return;
     // response is already handled
-    if (this.body != null || this.status != 404) return;
+    if (ctx.body != null || ctx.status != 404) return;
 
-    yield send(this, this.path, opts);
+    await send(ctx, ctx.path, opts);
   };
 }
