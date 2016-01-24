@@ -35,7 +35,7 @@
     "test": "mocha --harmony --reporter spec --compilers js:babel-core/register",
     "prepublish": "npm run compile",
     "compile": "babel index.js --out-file compiled.js",
-    "test-cov": "node --harmony ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha",
-    "test-travis": "node --harmony ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly"
+    "test-cov": "node --harmony ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- --compilers js:babel-core/register",
+    "test-travis": "node --harmony ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly -- --compilers js:babel-core/register"
   }
 }
