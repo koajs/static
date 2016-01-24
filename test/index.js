@@ -1,15 +1,16 @@
-
 'use strict';
+
+require('babel-polyfill');
 
 const request = require('supertest');
 const serve = require('..');
-const koa = require('koa');
+const Koa = require('koa');
 
 describe('serve(root)', function(){
   describe('when defer: false', function(){
     describe('when root = "."', function(){
       it('should serve from cwd', function(done){
-        const app = koa();
+        const app = new Koa();
 
         app.use(serve('.'));
 
@@ -21,7 +22,7 @@ describe('serve(root)', function(){
 
     describe('when path is not a file', function(){
       it('should 404', function(done){
-        const app = koa();
+        const app = new Koa();
 
         app.use(serve('test/fixtures'));
 
@@ -33,13 +34,13 @@ describe('serve(root)', function(){
 
     describe('when upstream middleware responds', function(){
       it('should respond', function(done){
-        const app = koa();
+        const app = new Koa();
 
         app.use(serve('test/fixtures'));
 
-        app.use(function *(next){
-          yield next;
-          this.body = 'hey';
+        app.use(async function (ctx, next){
+          await next();
+          ctx.body = 'hey';
         });
 
         request(app.listen())
@@ -51,7 +52,7 @@ describe('serve(root)', function(){
 
     describe('the path is valid', function(){
       it('should serve the file', function(done){
-        const app = koa();
+        const app = new Koa();
 
         app.use(serve('test/fixtures'));
 
@@ -65,7 +66,7 @@ describe('serve(root)', function(){
     describe('.index', function(){
       describe('when present', function(){
         it('should alter the index file supported', function(done){
-          const app = koa();
+          const app = new Koa();
 
           app.use(serve('test/fixtures', { index: 'index.txt' }));
 
@@ -79,7 +80,7 @@ describe('serve(root)', function(){
 
       describe('when omitted', function(){
         it('should use index.html', function(done){
-          const app = koa();
+          const app = new Koa();
 
           app.use(serve('test/fixtures'));
 
@@ -93,7 +94,7 @@ describe('serve(root)', function(){
 
       describe('when disabled', function(){
         it('should not use index.html', function(done){
-          const app = koa();
+          const app = new Koa();
 
           app.use(serve('test/fixtures', { index: false }));
 
@@ -106,7 +107,7 @@ describe('serve(root)', function(){
 
     describe('when method is not `GET` or `HEAD`', function(){
       it('should 404', function(done){
-        const app = koa();
+        const app = new Koa();
 
         app.use(serve('test/fixtures'));
 
@@ -120,15 +121,15 @@ describe('serve(root)', function(){
   describe('when defer: true', function(){
     describe('when upstream middleware responds', function(){
       it('should do nothing', function(done){
-        const app = koa();
+        const app = new Koa();
 
         app.use(serve('test/fixtures', {
           defer: true
         }));
 
-        app.use(function *(next){
-          yield next;
-          this.body = 'hey';
+        app.use(async function (ctx, next){
+          await next();
+          ctx.body = 'hey';
         });
 
         request(app.listen())
@@ -140,7 +141,7 @@ describe('serve(root)', function(){
 
     describe('the path is valid', function(){
       it('should serve the file', function(done){
-        const app = koa();
+        const app = new Koa();
 
         app.use(serve('test/fixtures', {
           defer: true
@@ -156,7 +157,7 @@ describe('serve(root)', function(){
     describe('.index', function(){
       describe('when present', function(){
         it('should alter the index file supported', function(done){
-          const app = koa();
+          const app = new Koa();
 
           app.use(serve('test/fixtures', {
             defer: true,
@@ -173,7 +174,7 @@ describe('serve(root)', function(){
 
       describe('when omitted', function(){
         it('should use index.html', function(done){
-          const app = koa();
+          const app = new Koa();
 
           app.use(serve('test/fixtures', {
           defer: true
@@ -217,7 +218,7 @@ describe('serve(root)', function(){
 
     describe('when path is not a file', function(){
       it('should 404', function(done){
-        const app = koa();
+        const app = new Koa();
 
         app.use(serve('test/fixtures', {
           defer: true
@@ -231,14 +232,14 @@ describe('serve(root)', function(){
 
     describe('it should not handle the request', function(){
       it('when status=204', function(done){
-        const app = koa();
+        const app = new Koa();
 
         app.use(serve('test/fixtures', {
           defer: true
         }));
 
-        app.use(function *(next){
-          this.status = 204;
+        app.use(function (ctx, next){
+          ctx.status = 204;
         })
 
         request(app.listen())
@@ -247,14 +248,14 @@ describe('serve(root)', function(){
       })
 
       it('when body=""', function(done){
-        const app = koa();
+        const app = new Koa();
 
         app.use(serve('test/fixtures', {
           defer: true
         }));
 
-        app.use(function *(next){
-          this.body = '';
+        app.use(function (ctx, next){
+          ctx.body = '';
         })
 
         request(app.listen())
@@ -265,7 +266,7 @@ describe('serve(root)', function(){
 
     describe('when method is not `GET` or `HEAD`', function(){
       it('should 404', function(done){
-        const app = koa();
+        const app = new Koa();
 
         app.use(serve('test/fixtures', {
           defer: true
@@ -281,7 +282,7 @@ describe('serve(root)', function(){
   describe('option - format', function(){
     describe('when format: false', function(){
       it('should 404', function(done){
-        const app = koa();
+        const app = new Koa();
 
         app.use(serve('test/fixtures', {
           index: 'index.html',
@@ -294,7 +295,7 @@ describe('serve(root)', function(){
       })
 
       it('should 200', function(done){
-        const app = koa();
+        const app = new Koa();
 
         app.use(serve('test/fixtures', {
           index: 'index.html',
@@ -309,7 +310,7 @@ describe('serve(root)', function(){
 
     describe('when format: true', function(){
       it('should 200', function(done){
-        const app = koa();
+        const app = new Koa();
 
         app.use(serve('test/fixtures', {
           index: 'index.html',
@@ -322,7 +323,7 @@ describe('serve(root)', function(){
       })
 
       it('should 200', function(done){
-        const app = koa();
+        const app = new Koa();
 
         app.use(serve('test/fixtures', {
           index: 'index.html',
