@@ -5,9 +5,9 @@
  * Module dependencies.
  */
 
+const debug = require('debug')('koa-static');
 const resolve = require('path').resolve;
 const assert = require('assert');
-const debug = require('debug')('koa-static');
 const send = require('koa-send');
 
 /**
@@ -36,21 +36,25 @@ function serve(root, opts) {
   if (opts.index !== false) opts.index = opts.index || 'index.html';
 
   if (!opts.defer) {
-    return function *serve(next){
-      if (this.method == 'HEAD' || this.method == 'GET') {
-        if (yield send(this, this.path, opts)) return;
+    return function serve(ctx, next){
+      if (ctx.method == 'HEAD' || ctx.method == 'GET') {
+        return send(ctx, ctx.path, opts).then(done => {
+          if (!done) {
+            return next();
+          }
+        });
       }
-      yield* next;
+      return next();
     };
   }
 
-  return function *serve(next){
-    yield* next;
+  return function serve(ctx, next){
+    return next().then(() => {
+      if (ctx.method != 'HEAD' && ctx.method != 'GET') return;
+      // response is already handled
+      if (ctx.body != null || ctx.status != 404) return;
 
-    if (this.method != 'HEAD' && this.method != 'GET') return;
-    // response is already handled
-    if (this.body != null || this.status != 404) return;
-
-    yield send(this, this.path, opts);
+      return send(ctx, ctx.path, opts);
+    });
   };
 }
