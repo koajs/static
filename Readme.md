@@ -18,8 +18,8 @@ $ npm install koa-static
 ## API
 
 ```js
-var koa = require('koa');
-var app = koa();
+var Koa = require('koa');
+var app = new Koa();
 app.use(require('koa-static')(root, opts));
 ```
 
@@ -38,8 +38,8 @@ app.use(require('koa-static')(root, opts));
 
 ```js
 var serve = require('koa-static');
-var koa = require('koa');
-var app = koa();
+var Koa = require('koa');
+var app = new Koa();
 
 // $ GET /package.json
 app.use(serve('.'));
