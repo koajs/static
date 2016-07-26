@@ -12,7 +12,7 @@
 ## Installation
 
 ```bash
-$ npm install koa-static
+$ npm install koa-static@next
 ```
 
 ## API
