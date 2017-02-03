@@ -16,13 +16,13 @@
   "devDependencies": {
     "istanbul": "0",
     "koa": "1",
-    "mocha": "2",
-    "supertest": "1"
+    "mocha": "3",
+    "supertest": "3"
   },
   "license": "MIT",
   "dependencies": {
-    "debug": "*",
-    "koa-send": "~3.1.0"
+    "debug": "^2.6.0",
+    "koa-send": "^3.3.0"
   },
   "scripts": {
     "test": "mocha --harmony --reporter spec",
