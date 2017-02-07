@@ -62,6 +62,44 @@ describe('serve(root)', function(){
       })
     })
 
+    describe('when maxage set', function(){
+      it('should add cache-control header', function(done){
+        var app = koa();
+
+        app.use(serve('test/fixtures', {
+          maxage: 3600 * 1000
+        }));
+
+        request(app.listen())
+            .get('/hello.txt')
+            .expect('Cache-Control', 'max-age=3600')
+            .expect(200, done);
+      })
+      it('can override cache-control header per path', function(done){
+        var app = koa();
+
+        app.use(serve('test/fixtures', {
+          updateOpts: function(path, opts) {
+            opts.maxage = path === '/hello.txt' ? 0 : 3600 * 1000;
+          }
+        }));
+
+        var req = request(app.listen());
+
+        req.get('/index.txt')
+            .expect('Cache-Control', 'max-age=3600')
+            .expect(200, function(err) {
+                if (err) {
+                    return done(err);
+                }
+
+              req.get('/hello.txt')
+                  .expect('Cache-Control', 'max-age=0')
+                  .expect(200, done);
+            });
+      })
+    })
+
     describe('.index', function(){
       describe('when present', function(){
         it('should alter the index file supported', function(done){
@@ -150,6 +188,46 @@ describe('serve(root)', function(){
         .get('/hello.txt')
         .expect(200)
         .expect('world', done);
+      })
+    })
+
+    describe('when maxage set', function(){
+      it('should add cache-control header', function(done){
+        var app = koa();
+
+        app.use(serve('test/fixtures', {
+          defer: true,
+          maxage: 3600 * 1000
+        }));
+
+        request(app.listen())
+            .get('/hello.txt')
+            .expect('Cache-Control', 'max-age=3600')
+            .expect(200, done);
+      })
+      it('can override cache-control header per path', function(done){
+        var app = koa();
+
+        app.use(serve('test/fixtures', {
+          defer: true,
+          updateOpts: function(path, opts) {
+            opts.maxage = path === '/hello.txt' ? 0 : 3600 * 1000;
+          }
+        }));
+
+        var req = request(app.listen());
+
+        req.get('/index.txt')
+            .expect('Cache-Control', 'max-age=3600')
+            .expect(200, function(err) {
+              if (err) {
+                return done(err);
+              }
+
+              req.get('/hello.txt')
+                  .expect('Cache-Control', 'max-age=0')
+                  .expect(200, done);
+            });
       })
     })
 
