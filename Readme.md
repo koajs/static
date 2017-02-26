@@ -12,14 +12,14 @@
 ## Installation
 
 ```bash
-$ npm install koa-static@next
+$ npm install koa-static
 ```
 
 ## API
 
 ```js
-var Koa = require('koa');
-var app = new Koa();
+const Koa = require('koa');
+const app = new Koa();
 app.use(require('koa-static')(root, opts));
 ```
 
@@ -38,9 +38,9 @@ app.use(require('koa-static')(root, opts));
 ## Example
 
 ```js
-var serve = require('koa-static');
-var Koa = require('koa');
-var app = new Koa();
+const serve = require('koa-static');
+const Koa = require('koa');
+const app = new Koa();
 
 // $ GET /package.json
 app.use(serve('.'));
