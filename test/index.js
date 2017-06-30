@@ -2,6 +2,7 @@
 'use strict'
 
 const request = require('supertest')
+const assert = require('assert')
 const serve = require('..')
 const Koa = require('koa')
 
@@ -28,6 +29,35 @@ describe('serve(root)', function () {
         request(app.listen())
           .get('/something')
           .expect(404, done)
+      })
+
+      it('should not throw 404 error', function (done) {
+        const app = new Koa()
+
+        let err = null
+
+        app.use(async (ctx, next) => {
+          try {
+            await next()
+          } catch (e) {
+            err = e
+          }
+        })
+
+        app.use(serve('test/fixtures'))
+
+        app.use(async (ctx) => {
+          ctx.body = 'ok'
+        })
+
+        request(app.listen())
+          .get('/something')
+          .expect(200)
+          .end((_, res) => {
+            assert.equal(res.text, 'ok')
+            assert.equal(err, null)
+            done()
+          })
       })
     })
 
@@ -228,6 +258,32 @@ describe('serve(root)', function () {
         request(app.listen())
           .get('/something')
           .expect(404, done)
+      })
+
+      it('should not throw 404 error', function (done) {
+        const app = new Koa()
+
+        let err = null
+
+        app.use(async (ctx, next) => {
+          try {
+            await next()
+          } catch (e) {
+            err = e
+          }
+        })
+
+        app.use(serve('test/fixtures', {
+          defer: true
+        }))
+
+        request(app.listen())
+          .get('/something')
+          .expect(200)
+          .end((_, res) => {
+            assert.equal(err, null)
+            done()
+          })
       })
     })
 
