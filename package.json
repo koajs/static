@@ -14,14 +14,14 @@
     "index.js"
   ],
   "devDependencies": {
-    "istanbul": "0",
-    "koa": "2",
-    "mocha": "2",
-    "supertest": "1"
+    "istanbul": "^0.4.5",
+    "koa": "^2.3.0",
+    "mocha": "^3.4.2",
+    "supertest": "^3.0.0"
   },
   "license": "MIT",
   "dependencies": {
-    "debug": "*",
+    "debug": "^2.6.8",
     "koa-send": "^3.2.0"
   },
   "scripts": {
