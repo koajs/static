@@ -28,7 +28,7 @@
   "license": "MIT",
   "dependencies": {
     "debug": "^2.6.8",
-    "koa-send": "^3.2.0"
+    "koa-send": "^4.1.0"
   },
   "scripts": {
     "lint": "eslint --fix .",
