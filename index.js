@@ -1,20 +1,20 @@
 
-'use strict';
+'use strict'
 
 /**
  * Module dependencies.
  */
 
-const debug = require('debug')('koa-static');
-const resolve = require('path').resolve;
-const assert = require('assert');
-const send = require('koa-send');
+const debug = require('debug')('koa-static')
+const resolve = require('path').resolve
+const assert = require('assert')
+const send = require('koa-send')
 
 /**
  * Expose `serve()`.
  */
 
-module.exports = serve;
+module.exports = serve
 
 /**
  * Serve static files from `root`.
@@ -25,36 +25,36 @@ module.exports = serve;
  * @api public
  */
 
-function serve(root, opts) {
-  opts = opts || {};
+function serve (root, opts) {
+  opts = opts || {}
 
-  assert(root, 'root directory is required to serve files');
+  assert(root, 'root directory is required to serve files')
 
   // options
-  debug('static "%s" %j', root, opts);
-  opts.root = resolve(root);
-  if (opts.index !== false) opts.index = opts.index || 'index.html';
+  debug('static "%s" %j', root, opts)
+  opts.root = resolve(root)
+  if (opts.index !== false) opts.index = opts.index || 'index.html'
 
   if (!opts.defer) {
-    return function serve(ctx, next){
-      if (ctx.method == 'HEAD' || ctx.method == 'GET') {
+    return function serve (ctx, next) {
+      if (ctx.method === 'HEAD' || ctx.method === 'GET') {
         return send(ctx, ctx.path, opts).then(done => {
           if (!done) {
-            return next();
+            return next()
           }
-        });
+        })
       }
-      return next();
-    };
+      return next()
+    }
   }
 
-  return function serve(ctx, next){
+  return function serve (ctx, next) {
     return next().then(() => {
-      if (ctx.method != 'HEAD' && ctx.method != 'GET') return;
+      if (ctx.method !== 'HEAD' && ctx.method !== 'GET') return
       // response is already handled
-      if (ctx.body != null || ctx.status != 404) return;
+      if (ctx.body != null || ctx.status !== 404) return // eslint-disable-line
 
-      return send(ctx, ctx.path, opts);
-    });
-  };
+      return send(ctx, ctx.path, opts)
+    })
+  }
 }

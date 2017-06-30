@@ -1,23 +1,23 @@
 
-'use strict';
+'use strict'
 
-const serve = require('./');
-const Koa = require('koa');
-const app = new Koa();
+const serve = require('./')
+const Koa = require('koa')
+const app = new Koa()
 
 // $ GET /package.json
 // $ GET /
 
-app.use(serve('.'));
+app.use(serve('.'))
 
 app.use((ctx, next) => {
   return next().then(() => {
-    if ('/' == ctx.path) {
-      ctx.body = 'Try `GET /package.json`';
+    if (ctx.path === '/') {
+      ctx.body = 'Try `GET /package.json`'
     }
-  });
+  })
 })
 
-app.listen(3000);
+app.listen(3000)
 
-console.log('listening on port 3000');
+console.log('listening on port 3000')
