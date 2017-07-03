@@ -2,7 +2,7 @@
   "name": "koa-static",
   "description": "Static file serving middleware for koa",
   "repository": "koajs/static",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "keywords": [
     "koa",
     "middleware",
@@ -35,5 +35,8 @@
     "test": "mocha --harmony --reporter spec",
     "test-cov": "node --harmony ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha",
     "test-travis": "node --harmony ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly"
+  },
+  "engines": {
+    "node": ">= 7.6.0"
   }
 }
