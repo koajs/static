@@ -39,8 +39,7 @@ function serve (root, opts) {
     return async function serve (ctx, next) {
       if (ctx.method === 'HEAD' || ctx.method === 'GET') {
         try {
-          const path = await send(ctx, ctx.path, opts)
-          path || await next()
+          await send(ctx, ctx.path, opts)
         } catch (err) {
           await next()
         }
