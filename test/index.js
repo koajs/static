@@ -132,6 +132,19 @@ describe('serve(root)', function () {
             .get('/world/')
             .expect(404, done)
         })
+
+        it('should pass to downstream if 404', function (done) {
+          const app = new Koa()
+
+          app.use(serve('test/fixtures', { index: false }))
+          app.use(async (ctx) => {
+            ctx.body = 'oh no'
+          })
+
+          request(app.listen())
+            .get('/world/')
+            .expect('oh no', done)
+        })
       })
     })
 
