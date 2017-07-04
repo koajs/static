@@ -37,16 +37,18 @@ function serve (root, opts) {
 
   if (!opts.defer) {
     return async function serve (ctx, next) {
+      let done = false
+
       if (ctx.method === 'HEAD' || ctx.method === 'GET') {
         try {
-          await send(ctx, ctx.path, opts)
+          done = await send(ctx, ctx.path, opts)
         } catch (err) {
-          await next()
         }
-        return
       }
 
-      await next()
+      if (!done) {
+        await next()
+      }
     }
   }
 
