@@ -1,4 +1,10 @@
 
+4.0.1 / 2017-07-09
+==================
+
+ * Fix: throw error if error status not 404
+ * fix `index: false` bug if path is directory
+
 4.0.0 / 2017-07-03
 ==================
 
