@@ -43,6 +43,9 @@ function serve (root, opts) {
         try {
           done = await send(ctx, ctx.path, opts)
         } catch (err) {
+          if (err.status !== 404) {
+            throw err
+          }
         }
       }
 
@@ -62,7 +65,9 @@ function serve (root, opts) {
     try {
       await send(ctx, ctx.path, opts)
     } catch (err) {
-      ctx.status = err.status || 500
+      if (err.status !== 404) {
+        throw err
+      }
     }
   }
 }
