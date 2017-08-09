@@ -41,7 +41,11 @@ function serve (root, opts) {
 
       if (ctx.method === 'HEAD' || ctx.method === 'GET') {
         try {
-          done = await send(ctx, ctx.path, opts)
+          let path = ctx.path;
+          if (opts.prefix && path.indexOf(opts.prefix) === 0) {
+            path = path.slice(opts.prefix.length);
+          }
+          done = await send(ctx, path, opts);
         } catch (err) {
           if (err.status !== 404) {
             throw err
