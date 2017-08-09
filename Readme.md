@@ -34,6 +34,7 @@ app.use(require('koa-static')(root, opts));
  - `defer` If true, serves after `return next()`, allowing any downstream middleware to respond first.
  - `gzip`  Try to serve the gzipped version of a file automatically when gzip is supported by a client and if the requested file with .gz extension exists. defaults to true.
  - `extensions` Try to match extensions from passed array to search for file when no extension is sufficed in URL. First found is served. (defaults to `false`)
+ - `prefix` Try to match request prefix.
 
 ## Example
 
@@ -50,6 +51,9 @@ app.use(serve('test/fixtures'));
 
 // or use absolute paths
 app.use(serve(__dirname + '/test/fixtures'));
+
+// $ GET /build/alhpa.js -> ../build/alpha.js
+app.use(serve(__dirname + '../build', { prefix: '/build' }));
 
 app.listen(3000);
 
