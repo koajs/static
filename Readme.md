@@ -1,13 +1,12 @@
 # koa-static
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/koajs/static.svg)](https://greenkeeper.io/)
-
 [![NPM version][npm-image]][npm-url]
 [![Build status][travis-image]][travis-url]
 [![Test coverage][coveralls-image]][coveralls-url]
 [![Dependency Status][david-image]][david-url]
 [![License][license-image]][license-url]
 [![Downloads][downloads-image]][downloads-url]
+[![Greenkeeper badge](https://badges.greenkeeper.io/koajs/static.svg)](https://greenkeeper.io/)
 
  Koa static file serving middleware, wrapper for [`koa-send`](https://github.com/koajs/send).
 
