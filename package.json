@@ -22,12 +22,12 @@
     "eslint-plugin-standard": "^3.0.1",
     "istanbul": "^0.4.5",
     "koa": "^2.3.0",
-    "mocha": "^3.4.2",
+    "mocha": "^4.0.1",
     "supertest": "^3.0.0"
   },
   "license": "MIT",
   "dependencies": {
-    "debug": "^2.6.8",
+    "debug": "^3.1.0",
     "koa-send": "^4.1.0"
   },
   "scripts": {
