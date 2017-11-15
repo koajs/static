@@ -26,7 +26,7 @@ module.exports = serve
  */
 
 function serve (root, opts) {
-  opts = opts || {}
+  opts = Object.assign({}, opts)
 
   assert(root, 'root directory is required to serve files')
 
