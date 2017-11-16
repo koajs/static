@@ -1,4 +1,9 @@
 
+4.0.2 / 2017-11-16
+==================
+
+* Fix: `serve` mutates `opts` argument so it cannot be reused (#117)
+
 4.0.1 / 2017-07-09
 ==================
 
