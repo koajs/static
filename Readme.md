@@ -6,6 +6,7 @@
 [![Dependency Status][david-image]][david-url]
 [![License][license-image]][license-url]
 [![Downloads][downloads-image]][downloads-url]
+[![Greenkeeper badge](https://badges.greenkeeper.io/koajs/static.svg)](https://greenkeeper.io/)
 
  Koa static file serving middleware, wrapper for [`koa-send`](https://github.com/koajs/send).
 
