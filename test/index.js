@@ -161,12 +161,17 @@ describe('serve(root)', function () {
     })
 
     describe('when prefix is `/public`', function () {
-      it('should 404', function (done) {
+      it('should 200', function (done) {
         const app = new Koa()
-        app.use(serve('test/fixtures', {prefix: '/public'}))
+
+        app.use(serve('test/fixtures', {
+          index: 'index.html',
+          prefix: '/public'
+        }))
+
         request(app.listen())
           .get('/public/world/')
-          .expect('oh no', done)
+          .expect(200, done)
       })
     })
 
@@ -360,12 +365,18 @@ describe('serve(root)', function () {
     })
 
     describe('when prefix is `/public`', function () {
-      it('should 404', function (done) {
+      it('should 200', function (done) {
         const app = new Koa()
-        app.use(serve('test/fixtures', {prefix: '/public'}))
+
+        app.use(serve('test/fixtures', {
+          index: 'index.html',
+          defer: true,
+          prefix: '/public'
+        }))
+
         request(app.listen())
           .get('/public/world/')
-          .expect('oh no', done)
+          .expect(200, done)
       })
     })
 
@@ -429,12 +440,18 @@ describe('serve(root)', function () {
     })
 
     describe('when prefix is `/public`', function () {
-      it('should 404', function (done) {
+      it('should 200', function (done) {
         const app = new Koa()
-        app.use(serve('test/fixtures', {prefix: '/public'}))
+
+        app.use(serve('test/fixtures', {
+          index: 'index.html',
+          format: true,
+          prefix: '/public'
+        }))
+
         request(app.listen())
           .get('/public/world/')
-          .expect('oh no', done)
+          .expect(200, done)
       })
     })
 
