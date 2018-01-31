@@ -16,6 +16,27 @@ const send = require('koa-send');
 module.exports = serve;
 
 /**
+ * Serve static path prefix.
+ *
+ * @param {String} path
+ * @param {String} prefix
+ * @return {String}
+ * @api private
+ */
+
+function _isPrefix(path, prefix) {
+  if (prefix) {
+    var regPrefix = new RegExp('^' + prefix);
+    if (path.match(regPrefix)) {
+      path = path.replace(regPrefix, '').replace(/^$/, '/');
+    } else {
+      path = undefined;
+    }
+  }
+  return path;
+}
+
+/**
  * Serve static files from `root`.
  *
  * @param {String} root
@@ -40,7 +61,11 @@ function serve(root, opts) {
 
       if (ctx.method === 'HEAD' || ctx.method === 'GET') {
         try {
-          done = await send(ctx, ctx.path, opts);
+          console.log('ctx.path: ', ctx.path);
+          var path = _isPrefix(ctx.path, opts.prefix);
+          if (path) {
+            done = await send(ctx, path, opts);
+          }
         } catch (err) {
           if (err.status !== 404) {
             throw err;
@@ -62,13 +87,10 @@ function serve(root, opts) {
     if (ctx.body != null || ctx.status !== 404) return; // eslint-disable-line
 
     try {
-      var path = ctx.path;
-      // prefix must be ASCII code
-      if (opts.prefix) {
-        var regPrefix = new RegExp('^' + opts.prefix);
-        path = path.replace(regPrefix, '');
+      var path = _isPrefix(ctx.path, opts.prefix);
+      if (path) {
+        await send(ctx, path, opts);
       }
-      await send(ctx, path, opts);
     } catch (err) {
       if (err.status !== 404) {
         throw err;
