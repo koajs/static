@@ -159,6 +159,17 @@ describe('serve(root)', function () {
           .expect(404, done)
       })
     })
+
+    describe('when prefix is `/public`', function () {
+      it('should 404', function (done) {
+        const app = new Koa()
+        app.use(serve('test/fixtures', {prefix: '/public'}))
+        request(app.listen())
+          .get('/public/world/')
+          .expect('oh no', done)
+      })
+    })
+
   })
 
   describe('when defer: true', function () {
@@ -347,6 +358,17 @@ describe('serve(root)', function () {
           .expect(404, done)
       })
     })
+
+    describe('when prefix is `/public`', function () {
+      it('should 404', function (done) {
+        const app = new Koa()
+        app.use(serve('test/fixtures', {prefix: '/public'}))
+        request(app.listen())
+          .get('/public/world/')
+          .expect('oh no', done)
+      })
+    })
+
   })
 
   describe('option - format', function () {
@@ -405,5 +427,16 @@ describe('serve(root)', function () {
           .expect(200, done)
       })
     })
+
+    describe('when prefix is `/public`', function () {
+      it('should 404', function (done) {
+        const app = new Koa()
+        app.use(serve('test/fixtures', {prefix: '/public'}))
+        request(app.listen())
+          .get('/public/world/')
+          .expect('oh no', done)
+      })
+    })
+
   })
 })
