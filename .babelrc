@@ -5,5 +5,13 @@
         "node": "6.11"
       }
     }]
+  ],
+  "plugins": [
+    ["module-resolver", {
+      "root": [""],
+      "alias": {
+        "koa-send": "koa-send/legacy"
+      }
+    }]
   ]
 }
