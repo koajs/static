@@ -11,7 +11,8 @@
     "sendfile"
   ],
   "files": [
-    "index.js"
+    "index.js",
+    "legacy/index.js"
   ],
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.39",
