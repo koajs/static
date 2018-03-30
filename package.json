@@ -45,6 +45,6 @@
     "test-travis": "node --harmony ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly"
   },
   "engines": {
-    "node": ">= 7.6.0"
+    "node": ">= 6"
   }
 }
