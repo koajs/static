@@ -2,7 +2,7 @@
   "name": "koa-static",
   "description": "Static file serving middleware for koa",
   "repository": "koajs/static",
-  "version": "4.0.2",
+  "version": "4.0.3",
   "keywords": [
     "koa",
     "middleware",
@@ -11,9 +11,15 @@
     "sendfile"
   ],
   "files": [
-    "index.js"
+    "index.js",
+    "legacy/index.js"
   ],
   "devDependencies": {
+    "@babel/cli": "^7.0.0-beta.39",
+    "@babel/core": "^7.0.0-beta.39",
+    "@babel/polyfill": "^7.0.0-beta.39",
+    "@babel/preset-env": "^7.0.0-beta.39",
+    "@babel/register": "^7.0.0-beta.39",
     "eslint": "^4.1.1",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.6.1",
@@ -27,16 +33,18 @@
   },
   "license": "MIT",
   "dependencies": {
+    "babel-plugin-module-resolver": "^3.0.0",
     "debug": "^2.6.8",
     "koa-send": "^4.1.0"
   },
   "scripts": {
     "lint": "eslint --fix .",
+    "prepublishOnly": "babel index.js --out-file legacy/index.js",
     "test": "mocha --harmony --reporter spec",
     "test-cov": "node --harmony ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha",
     "test-travis": "node --harmony ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly"
   },
   "engines": {
-    "node": ">= 7.6.0"
+    "node": ">= 6"
   }
 }
