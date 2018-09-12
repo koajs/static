@@ -1,4 +1,11 @@
 
+1.5.3 / 2018-09-12
+==================
+
+**others**
+  * [[`bf3cbe3`](http://github.com/koajs/static/commit/bf3cbe39bac2bf4d6a91c57ed2a2bc2a138513eb)] - deps: pin debug@3 to support node 4 (#133) (fengmk2 <<fengmk2@gmail.com>>)
+  * [[`fe1800a`](http://github.com/koajs/static/commit/fe1800a9e0737247a2fea23ecaa11273a9cb9780)] - 1.5.2 (haoxin <<coderhaoxin@outlook.com>>),
+
 1.5.2 / 2015-11-03
 ==================
 
