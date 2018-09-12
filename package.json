@@ -21,12 +21,15 @@
   },
   "license": "MIT",
   "dependencies": {
-    "debug": "*",
+    "debug": "^3.2.5",
     "koa-send": "~2.0.1"
   },
   "scripts": {
     "test": "mocha --harmony --reporter spec",
     "test-cov": "node --harmony ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha",
     "test-travis": "node --harmony ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha --report lcovonly"
+  },
+  "publishConfig": {
+    "tag": "latest-1"
   }
 }
