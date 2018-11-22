@@ -51,6 +51,8 @@ function serve (root, opts) {
 
       if (!done) {
         await next()
+      } else if (ctx.fresh) {
+        ctx.status = 304
       }
     }
   }

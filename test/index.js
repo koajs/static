@@ -159,6 +159,32 @@ describe('serve(root)', function () {
           .expect(404, done)
       })
     })
+
+    describe('when file not modified', function () {
+      it('should 304', function (done) {
+        const app = new Koa()
+
+        app.use(serve('test/fixtures'))
+
+        request(app.listen())
+          .get('/hello.txt')
+          .end(function (err, res) {
+            if (err) return done(err)
+            let ifModifiedSince = res.header['last-modified']
+            request(app.listen())
+              .get('/hello.txt')
+              .set('If-Modified-Since', ifModifiedSince)
+              .expect(function (res) {
+                if (res.status !== 304) {
+                  throw new Error('response status should be 304')
+                } else if (res.text !== '') {
+                  throw new Error('response body be null')
+                }
+              })
+              .end(done)
+          })
+      })
+    })
   })
 
   describe('when defer: true', function () {
