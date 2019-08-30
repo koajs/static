@@ -35,13 +35,18 @@ function serve (root, opts) {
   opts.root = resolve(root)
   if (opts.index !== false) opts.index = opts.index || 'index.html'
 
+  const repath = opts.repath;
+  if (repath && typeof repath !== 'function') {
+    throw new TypeError('option repath must be function')
+  }
+  
   if (!opts.defer) {
     return async function serve (ctx, next) {
       let done = false
 
       if (ctx.method === 'HEAD' || ctx.method === 'GET') {
         try {
-          done = await send(ctx, ctx.path, opts)
+          done = await send(ctx, repath ? repath(ctx.path, ctx) : ctx.path, opts)
         } catch (err) {
           if (err.status !== 404) {
             throw err
@@ -63,7 +68,7 @@ function serve (root, opts) {
     if (ctx.body != null || ctx.status !== 404) return // eslint-disable-line
 
     try {
-      await send(ctx, ctx.path, opts)
+      await send(ctx, repath ? repath(ctx.path, ctx) : ctx.path, opts)
     } catch (err) {
       if (err.status !== 404) {
         throw err
