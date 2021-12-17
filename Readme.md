@@ -18,9 +18,10 @@ $ npm install koa-static
 ## API
 
 ```js
-const Koa = require('koa');
+import Koa from 'koa' // CJS: require('koa');
+import serve from 'koa-static'; // CJS: require('koa-static')
 const app = new Koa();
-app.use(require('koa-static')(root, opts));
+app.use(serve(root, opts));
 ```
 
 * `root` root directory string. nothing above this root directory can be served
