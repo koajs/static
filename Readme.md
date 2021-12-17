@@ -18,7 +18,7 @@ $ npm install koa-static
 ## API
 
 ```js
-import Koa from 'koa' // CJS: require('koa');
+import Koa from 'koa'; // CJS: require('koa');
 import serve from 'koa-static'; // CJS: require('koa-static')
 const app = new Koa();
 app.use(serve(root, opts));
