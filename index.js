@@ -6,7 +6,7 @@
  */
 
 const debug = require('debug')('koa-static')
-const { resolve } = require('path')
+const path = require('path')
 const assert = require('assert')
 const send = require('koa-send')
 
@@ -25,15 +25,12 @@ module.exports = serve
  * @api public
  */
 
-function serve (root, opts) {
-  opts = Object.assign(Object.create(null), opts)
-
+function serve (root, opts = {}) {
   assert(root, 'root directory is required to serve files')
 
-  // options
   debug('static "%s" %j', root, opts)
-  opts.root = resolve(root)
-  if (opts.index !== false) opts.index = opts.index || 'index.html'
+  opts.root = path.resolve(root)
+  opts.index = opts.index ?? 'index.html'
 
   if (!opts.defer) {
     return async function serve (ctx, next) {
