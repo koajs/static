@@ -17,7 +17,7 @@
     "eslint": "^8.16.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-n": "^15.2.0",
+    "eslint-plugin-n": "^17.17.0",
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-standard": "^5.0.0",
     "koa": "^2.13.4",
