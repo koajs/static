@@ -34,6 +34,7 @@ app.use(serve(root, opts));
 - `defer` If true, serves after `return next()`, allowing any downstream middleware to respond first.
 - `gzip` Try to serve the gzipped version of a file automatically when gzip is supported by a client and if the requested file with .gz extension exists. defaults to true.
 - `brotli` Try to serve the brotli version of a file automatically when brotli is supported by a client and if the requested file with .br extension exists (note, that brotli is only accepted over https). defaults to true.
+- `format` Directory handling mode. By default, directory requests without a trailing slash redirect to the slash-appended URL when an index file exists. If `true`, directory indexes are served without requiring a trailing slash. If `false`, directory index formatting is disabled.
 - [setHeaders](https://github.com/koajs/send#setheaders) Function to set custom headers on response.
 - `extensions` Try to match extensions from passed array to search for file when no extension is sufficed in URL. First found is served. (defaults to `false`).  e.g. `['html']`
 
