@@ -38,5 +38,9 @@
   },
   "engines": {
     "node": ">= 14"
+  },
+  "homepage": "https://github.com/koajs/static",
+  "bugs": {
+    "url": "https://github.com/koajs/static/issues"
   }
 }
