@@ -1,29 +1,18 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
-    "lib": ["dom", "es6", "es2017", "esnext.asynciterable"],
+    "target": "ES2019",
+    "lib": ["ES2019"],
+    "module": "Node16",
+    "moduleResolution": "Node16",
+    "rootDir": "src",
+    "outDir": "dist/cjs",
+    "types": ["node"],
+    "strict": true,
     "skipLibCheck": true,
-    "sourceMap": true,
-    "outDir": "./dist",
-    "moduleResolution": "node",
-    "removeComments": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "noEmitOnError": true,
     "esModuleInterop": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "resolveJsonModule": true,
-    "baseUrl": ".",
-    "types": ["jest", "node"]
+    "forceConsistentCasingInFileNames": true
   },
-  "include": ["./src/**/*.ts"],
-  "exclude": ["dist", "node_modules", "src/**/*.test.tsx"]
+  "include": ["src/**/*.ts"]
 }

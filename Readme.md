@@ -1,8 +1,7 @@
 # koa-static
 
 [![NPM version][npm-image]][npm-url]
-[![Build status][travis-image]][travis-url]
-[![Test coverage][coveralls-image]][coveralls-url]
+[![Build status][ci-image]][ci-url]
 [![License][license-image]][license-url]
 [![Downloads][downloads-image]][downloads-url]
 
@@ -26,6 +25,8 @@ app.use(serve(root, opts));
 - `root` root directory string. nothing above this root directory can be served
 - `opts` options object.
 
+CommonJS (`require('koa-static')`) and ESM default imports are supported on Node.js 22 and newer. TypeScript declarations are included.
+
 ### Options
 
 - `maxage` Browser cache max-age in milliseconds. defaults to 0
@@ -35,7 +36,7 @@ app.use(serve(root, opts));
 - `gzip` Try to serve the gzipped version of a file automatically when gzip is supported by a client and if the requested file with .gz extension exists. defaults to true.
 - `brotli` Try to serve the brotli version of a file automatically when brotli is supported by a client and if the requested file with .br extension exists (note, that brotli is only accepted over https). defaults to true.
 - [setHeaders](https://github.com/koajs/send#setheaders) Function to set custom headers on response.
-- `extensions` Try to match extensions from passed array to search for file when no extension is sufficed in URL. First found is served. (defaults to `false`)
+- `extensions` Try to match extensions from passed array to search for file when no extension is sufficed in URL. First found is served. (defaults to `false`).  e.g. `['html']`
 
 ## Example
 
@@ -64,6 +65,11 @@ console.log("listening on port 3000");
 - [koajs/compress](https://github.com/koajs/compress) Compress middleware for koa
 - [koajs/mount](https://github.com/koajs/mount) Mount `koa-static` to a specific path
 
+## Development
+
+Use Node.js 26. Run `npm run setup` to install dependencies, validate, and install the optional pre-commit hook.
+Run `npm run validate` for lint, types, and tests; `npm run build` emits CommonJS, ESM, and declarations in `dist/`.
+
 ## License
 
 MIT
@@ -72,10 +78,8 @@ MIT
 [npm-url]: https://npmjs.org/package/koa-static
 [github-tag]: http://img.shields.io/github/tag/koajs/static.svg?style=flat-square
 [github-url]: https://github.com/koajs/static/tags
-[travis-image]: https://img.shields.io/travis/koajs/static.svg?style=flat-square
-[travis-url]: https://travis-ci.org/koajs/static
-[coveralls-image]: https://img.shields.io/coveralls/koajs/static.svg?style=flat-square
-[coveralls-url]: https://coveralls.io/r/koajs/static?branch=master
+[ci-image]: https://github.com/koajs/static/actions/workflows/ci.yml/badge.svg
+[ci-url]: https://github.com/koajs/static/actions/workflows/ci.yml
 [license-image]: http://img.shields.io/npm/l/koa-static.svg?style=flat-square
 [license-url]: LICENSE
 [downloads-image]: http://img.shields.io/npm/dm/koa-static.svg?style=flat-square

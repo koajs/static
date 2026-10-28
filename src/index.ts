@@ -1,5 +1,1 @@
-export {
-  /* istanbul ignore next */
-  serve as koaStatic,
-  serve as default,
-} from './static';
+export { serve as default } from './static.js';

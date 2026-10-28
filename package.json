@@ -1,16 +1,25 @@
 {
-  "name": "@koa/static",
+  "name": "koa-static",
   "description": "Static file serving middleware for koa",
   "version": "6.0.0",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
+  "main": "dist/cjs/index.cjs",
+  "module": "dist/esm/index.js",
+  "types": "dist/cjs/index.d.cts",
   "exports": {
     ".": {
-      "require": "./dist/index.js",
-      "import": "./dist/index.mjs",
-      "types": "./dist/index.d.ts"
-    }
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.cts",
+        "default": "./dist/cjs/index.cjs"
+      }
+    },
+    "./index": "./dist/cjs/index.cjs",
+    "./index.js": "./dist/cjs/index.cjs",
+    "./package.json": "./package.json",
+    "./*": "./*"
   },
   "files": [
     "dist"
@@ -24,59 +33,48 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/koajs/static.git"
+    "url": "https://github.com/koajs/static.git"
   },
-  "author": {
-    "name": "TJ Holowaychuk",
-    "email": "tj@apex.sh",
-    "url": "https://apex.sh/"
-  },
-  "contributors": [
-    {
-      "name": "Imed Jaberi",
-      "email": "imed_jebari@hotmail.fr"
-    },
-    {
-      "name": "Evgenii Troinov",
-      "email": "troinof@gmail.com"
-    }
-  ],
   "devDependencies": {
-    "@swc/core": "^1.3.83",
-    "@types/debug": "^4.1.8",
-    "@types/jest": "^29.5.4",
-    "@types/koa": "^2.13.8",
-    "@types/node": "^20.6.0",
-    "@types/supertest": "^2.0.12",
-    "eslint": "^8.49.0",
-    "eslint-config-standard": "^17.1.0",
-    "eslint-config-xo-lass": "^2.0.1",
-    "eslint-plugin-import": "^2.28.1",
-    "eslint-plugin-n": "^16.0.2",
-    "eslint-plugin-promise": "^6.1.1",
-    "eslint-plugin-standard": "^5.0.0",
-    "husky": "^8.0.0",
-    "jest": "^29.6.4",
-    "koa": "^2.14.2",
-    "supertest": "^6.3.3",
-    "tsup": "^7.2.0",
-    "typescript": "^5.2.2",
-    "xo": "^0.56.0"
+    "@types/debug": "^4.1.13",
+    "@types/koa": "^2.15.0",
+    "@types/koa-send": "^4.1.6",
+    "@types/node": "^14.18.63",
+    "koa": "^2.16.4",
+    "oxfmt": "^0.75.0",
+    "oxlint": "^1.90.0",
+    "oxlint-plugin-legibility": "^0.0.5",
+    "supertest": "^7.3.1",
+    "typescript": "^7.0.2"
   },
   "license": "MIT",
   "dependencies": {
     "debug": "^4.3.4",
-    "@koa/send": "^5.0.1"
+    "koa-send": "^5.0.1"
   },
   "scripts": {
-    "build": "tsup",
-    "lint": "xo",
-    "lint:fix": "xo --fix",
-    "test": "jest --detectOpenHandles",
-    "test-ci": "npm run test -- --coverage",
-    "prepare": "husky install"
+    "build": "npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc && node -e \"const fs = require('node:fs'); fs.writeFileSync('dist/cjs/index.cjs', \\\"module.exports = require('./index.js').default;\\\"); fs.writeFileSync('dist/cjs/index.d.cts', \\\"import serve from './index.js'; export = serve;\\\")\"",
+    "build:esm": "tsc --module ES2022 --moduleResolution Bundler --outDir dist/esm && node -e \"require('node:fs').writeFileSync('dist/esm/package.json', JSON.stringify({ type: 'module' }))\"",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint -c .oxlint.config.mts --deny-warnings && npm run format -- --check",
+    "lint:fix": "oxlint -c .oxlint.config.mts --fix && npm run format",
+    "format": "oxfmt -c .oxfmtrc.json . '!**/*.md' '!test/fixtures/**/*.html' '!package-lock.json'",
+    "test": "npm run build && node --test test/unit/index.test.ts test/integration/static.test.ts",
+    "test-cov": "npm run build && node --test --experimental-test-coverage test/unit/index.test.ts test/integration/static.test.ts",
+    "test:e2e": "node --test test/e2e/static.test.ts",
+    "validate": "npm run lint && npm run typecheck && npm test",
+    "setup": "sh scripts/setup/setup.sh",
+    "prepack": "npm run build"
   },
   "engines": {
-    "node": ">= 18"
+    "node": ">= 22"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "26.x",
+      "onFail": "warn"
+    }
   }
 }

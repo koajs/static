@@ -1,3 +1,7 @@
-.vscode
-dist
-node_modules
+node_modules/
+dist/
+coverage/
+artifacts/
+.compat/
+.vscode/
+tmp/
