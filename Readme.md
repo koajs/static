@@ -1,8 +1,7 @@
 # koa-static
 
 [![NPM version][npm-image]][npm-url]
-[![Build status][travis-image]][travis-url]
-[![Test coverage][coveralls-image]][coveralls-url]
+[![Build status][ci-image]][ci-url]
 [![License][license-image]][license-url]
 [![Downloads][downloads-image]][downloads-url]
 
@@ -25,6 +24,8 @@ app.use(serve(root, opts));
 
 - `root` root directory string. nothing above this root directory can be served
 - `opts` options object.
+
+CommonJS (`require('koa-static')`) and ESM default imports are supported on Node.js 22 and newer. TypeScript declarations are included.
 
 ### Options
 
@@ -64,6 +65,19 @@ console.log("listening on port 3000");
 - [koajs/compress](https://github.com/koajs/compress) Compress middleware for koa
 - [koajs/mount](https://github.com/koajs/mount) Mount `koa-static` to a specific path
 
+## Development
+
+Use Node.js 26. Run `npm run setup` to install dependencies, validate, and install the optional pre-commit hook.
+Run `npm run validate` for lint, types, and tests; `npm run build` emits CommonJS, ESM, and declarations in `dist/`.
+
+### Releases
+
+Configure npm's [trusted publisher](https://docs.npmjs.com/trusted-publishers/) for organization `koajs`, repository `static`, workflow `release.yml`, and environment `npm`, with direct `npm publish` allowed. Protect the GitHub `npm` environment with required reviewers, self-review and administrator bypass disabled, and deployments restricted to `v*` tags. Restrict release-tag creation to maintainers and prohibit tag updates and deletion.
+
+Merge the release commit into the default branch, then push a `vX.Y.Z` tag matching `package.json`, such as `v6.0.0`. The workflow publishes CI's tested tarball after the environment is approved. Prereleases, backports, and automatic GitHub release creation are outside this workflow's scope.
+
+Releases share a queue with room for 100 pending runs. Unpublished versions older than a published stable version are rejected. Reruns skip publication only when npm's recorded SHA-512 integrity matches the tested tarball; registry errors or mismatched artifacts fail the release.
+
 ## License
 
 MIT
@@ -72,10 +86,8 @@ MIT
 [npm-url]: https://npmjs.org/package/koa-static
 [github-tag]: http://img.shields.io/github/tag/koajs/static.svg?style=flat-square
 [github-url]: https://github.com/koajs/static/tags
-[travis-image]: https://img.shields.io/travis/koajs/static.svg?style=flat-square
-[travis-url]: https://travis-ci.org/koajs/static
-[coveralls-image]: https://img.shields.io/coveralls/koajs/static.svg?style=flat-square
-[coveralls-url]: https://coveralls.io/r/koajs/static?branch=master
+[ci-image]: https://github.com/koajs/static/actions/workflows/ci.yml/badge.svg
+[ci-url]: https://github.com/koajs/static/actions/workflows/ci.yml
 [license-image]: http://img.shields.io/npm/l/koa-static.svg?style=flat-square
 [license-url]: LICENSE
 [downloads-image]: http://img.shields.io/npm/dm/koa-static.svg?style=flat-square
