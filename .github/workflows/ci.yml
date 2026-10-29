@@ -1,0 +1,65 @@
+name: CI
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      development-node: ${{ steps.runtime.outputs.node }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - id: runtime
+        run: node -p "'node=' + require('./package.json').devEngines.runtime.version" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ steps.runtime.outputs.node }}
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run validate
+      - run: npm run test-cov
+      - run: mkdir -p tmp/artifacts && npm pack --pack-destination tmp/artifacts
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: package
+          path: tmp/artifacts/*.tgz
+  integration:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ["14.0.0", 14, 18, 20, 22, 24, 26]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ matrix.node }}
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: package
+          path: tmp/artifacts
+      - run: mkdir -p tmp/current && echo '{"private":true}' > tmp/current/package.json
+      - run: npm install --prefix tmp/current --ignore-scripts --omit=dev --package-lock=false ./tmp/artifacts/koa-static-*.tgz koa@2.16.4
+      - run: cp test/fixtures/esm.mjs tmp/current/esm.mjs
+      - run: node test/fixtures/common.cjs
+  e2e:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ needs.build.outputs.development-node }}
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: package
+          path: tmp/artifacts
+      - run: npm install --prefix tmp/current --ignore-scripts --omit=dev --package-lock=false ./tmp/artifacts/koa-static-*.tgz koa@2.16.4
+      - run: npm install --prefix tmp/latest --ignore-scripts --omit=dev --package-lock=false koa-static@latest koa@2.16.4
+      - run: npm run test:e2e

@@ -1,0 +1,20 @@
+{
+  "semi": false,
+  "singleQuote": true,
+  "trailingComma": "none",
+  "sortPackageJson": false,
+  "overrides": [
+    {
+      "files": ["**/*.yml", "**/*.yaml"],
+      "options": {
+        "singleQuote": false
+      }
+    },
+    {
+      "files": ["**/src/**/*.ts"],
+      "options": {
+        "semi": true
+      }
+    }
+  ]
+}

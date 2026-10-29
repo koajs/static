@@ -1,4 +1,7 @@
-package-lock.json
-node_modules
-coverage
-.nyc_output
+node_modules/
+dist/
+coverage/
+artifacts/
+.compat/
+.vscode/
+tmp/

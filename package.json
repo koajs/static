@@ -1,8 +1,29 @@
 {
   "name": "koa-static",
   "description": "Static file serving middleware for koa",
-  "repository": "koajs/static",
-  "version": "5.0.0",
+  "version": "6.0.0",
+  "main": "dist/cjs/index.cjs",
+  "module": "dist/esm/index.js",
+  "types": "dist/cjs/index.d.cts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.cts",
+        "default": "./dist/cjs/index.cjs"
+      }
+    },
+    "./index": "./dist/cjs/index.cjs",
+    "./index.js": "./dist/cjs/index.cjs",
+    "./package.json": "./package.json",
+    "./*": "./*"
+  },
+  "files": [
+    "dist"
+  ],
   "keywords": [
     "koa",
     "middleware",
@@ -10,20 +31,21 @@
     "static",
     "sendfile"
   ],
-  "files": [
-    "index.js"
-  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/koajs/static.git"
+  },
   "devDependencies": {
-    "eslint": "^8.16.0",
-    "eslint-config-standard": "^17.0.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-n": "^15.2.0",
-    "eslint-plugin-promise": "^6.0.0",
-    "eslint-plugin-standard": "^5.0.0",
-    "koa": "^2.13.4",
-    "mocha": "^10.0.0",
-    "nyc": "^15.1.0",
-    "supertest": "^6.2.3"
+    "@types/debug": "^4.1.13",
+    "@types/koa": "^2.15.0",
+    "@types/koa-send": "^4.1.6",
+    "@types/node": "^14.18.63",
+    "koa": "^2.16.4",
+    "oxfmt": "^0.75.0",
+    "oxlint": "^1.90.0",
+    "oxlint-plugin-legibility": "^0.0.5",
+    "supertest": "^7.3.1",
+    "typescript": "^7.0.2"
   },
   "license": "MIT",
   "dependencies": {
@@ -31,12 +53,28 @@
     "koa-send": "^5.0.1"
   },
   "scripts": {
-    "lint": "eslint --fix .",
-    "test": "mocha --exit",
-    "test-cov": "nyc npm run test",
-    "test-travis": "nyc npm run test -- --report lcovonly"
+    "build": "npm run build:cjs && npm run build:esm",
+    "build:cjs": "tsc && node -e \"const fs = require('node:fs'); fs.writeFileSync('dist/cjs/index.cjs', \\\"module.exports = require('./index.js').default;\\\"); fs.writeFileSync('dist/cjs/index.d.cts', \\\"import serve from './index.js'; export = serve;\\\")\"",
+    "build:esm": "tsc --module ES2022 --moduleResolution Bundler --outDir dist/esm && node -e \"require('node:fs').writeFileSync('dist/esm/package.json', JSON.stringify({ type: 'module' }))\"",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint -c .oxlint.config.mts --deny-warnings && npm run format -- --check",
+    "lint:fix": "oxlint -c .oxlint.config.mts --fix && npm run format",
+    "format": "oxfmt -c .oxfmtrc.json . '!**/*.md' '!test/fixtures/**/*.html' '!package-lock.json'",
+    "test": "npm run build && node --test test/unit/index.test.ts test/integration/static.test.ts",
+    "test-cov": "npm run build && node --test --experimental-test-coverage test/unit/index.test.ts test/integration/static.test.ts",
+    "test:e2e": "node --test test/e2e/static.test.ts",
+    "validate": "npm run lint && npm run typecheck && npm test",
+    "setup": "sh scripts/setup/setup.sh",
+    "prepack": "npm run build"
   },
   "engines": {
-    "node": ">= 14"
+    "node": ">= 22"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "26.x",
+      "onFail": "warn"
+    }
   }
 }
