@@ -42,7 +42,7 @@ jobs:
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: ${{ steps.runtime.outputs.node }}
-          cache: npm
+          package-manager-cache: false
       - name: Check tag matches package.json and is on the default branch
         id: check-tag
         timeout-minutes: 1
@@ -82,14 +82,26 @@ jobs:
           path: dist/
           if-no-files-found: error
           retention-days: 1
+  compatibility:
+    name: Compatibility checks
+    needs: build
+    permissions:
+      contents: read
+    uses: ./.github/workflows/ci.yml
+    with:
+      ref: ${{ needs.build.outputs.commit }}
   publish:
     name: Publish to npm
-    needs: build
+    needs: [build, compatibility]
+    # Bind npm's trusted publisher to this environment; require independent review and deployment ref restrictions in GitHub.
+    environment: npm
     runs-on: ubuntu-slim
     timeout-minutes: 15
     permissions:
       contents: read
       id-token: write
+    env:
+      EXPECTED_COMMIT: ${{ needs.build.outputs.commit }}
     steps:
       - name: Checkout tag
         timeout-minutes: 5
@@ -132,16 +144,25 @@ jobs:
             const newer = view(`${name}@>${version}`, 'version');
             if (!newer) return 'latest';
             const major = version.split('.', 1)[0];
+            const newerInMajor = view(`${name}@>${version} ${major}`, 'version');
+            if (newerInMajor) {
+              throw new Error(`${version} is older than a published stable version in major ${major}`);
+            }
             const distributionTag = `v${major}-latest`;
+            return distributionTag;
+          }
+          function checkDistributionTag(distributionTag) {
             const current = view(name, `dist-tags.${distributionTag}`);
-            if (!current) return distributionTag;
-            const ahead = view(`${name}@${current} >=${version}`, 'version');
+            if (!current) return;
+            const ahead = view(`${name}@${current} >${version}`, 'version');
             if (ahead) {
               throw new Error(`${version} would move ${distributionTag} backward from ${current}`);
             }
-            return distributionTag;
           }
           const head = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+          if (process.env.EXPECTED_COMMIT !== head) {
+            throw new Error(`Checked-out commit ${head} differs from validated commit ${process.env.EXPECTED_COMMIT}`);
+          }
           const publishedHead = view(`${name}@${version}`, 'gitHead');
           const isPublished = publishedHead !== undefined;
           if (isPublished) {
@@ -150,32 +171,40 @@ jobs:
             }
             process.stdout.write(`${name}@${version} is already published from this commit; skipping\n`);
           } else {
-            if (process.env.GITHUB_SHA !== head) {
-              throw new Error(`GITHUB_SHA ${process.env.GITHUB_SHA} differs from the checked-out commit ${head}; dispatch with the tag as the workflow ref`);
-            }
             const precedence = version.split('+', 1)[0];
             const isPrerelease = precedence.includes('-');
             const distributionTag = isPrerelease ? 'next' : stableTag();
+            checkDistributionTag(distributionTag);
             const publishArguments = ['publish', '--ignore-scripts', '--tag', distributionTag];
             execFileSync('npm', publishArguments, { stdio: 'inherit' });
           }
           NODE
   github-release:
     name: Create GitHub release
-    needs: publish
+    needs: [build, publish]
     runs-on: ubuntu-slim
     timeout-minutes: 5
     permissions:
       contents: write
     env:
       TAG: ${{ inputs.tag || github.ref_name }}
+      EXPECTED_COMMIT: ${{ needs.build.outputs.commit }}
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
     steps:
       - name: Create release
         timeout-minutes: 2
         run: |
-          if gh release view "$TAG" >/dev/null 2>&1; then
+          current_commit="$(gh api "repos/$GH_REPO/commits/refs/tags/$TAG" --jq '.sha')"
+          if [ "$current_commit" != "$EXPECTED_COMMIT" ]; then
+            echo "::error::Tag $TAG moved from validated commit $EXPECTED_COMMIT to $current_commit" >&2
+            exit 1
+          fi
+          if is_draft="$(gh release view "$TAG" --json isDraft --jq '.isDraft')"; then
+            if [ "$is_draft" = "true" ]; then
+              echo "::error::Release $TAG is a draft; publish or delete the draft before retrying" >&2
+              exit 1
+            fi
             echo "Release $TAG already exists"
             exit 0
           fi
