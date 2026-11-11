@@ -70,6 +70,12 @@ console.log("listening on port 3000");
 Use Node.js 26. Run `npm run setup` to install dependencies, validate, and install the optional pre-commit hook.
 Run `npm run validate` for lint, types, and tests; `npm run build` emits CommonJS, ESM, and declarations in `dist/`.
 
+### Releases
+
+Configure npm's [trusted publisher](https://docs.npmjs.com/trusted-publishers/) for organization `koajs`, repository `static`, workflow `release.yml`, and environment `npm`, with direct `npm publish` allowed. Protect the GitHub `npm` environment with required reviewers, self-review and administrator bypass disabled, and deployments restricted to `v*` tags. Restrict release-tag creation to maintainers and prohibit tag updates and deletion.
+
+Merge the release commit into the default branch, then push a `vX.Y.Z` tag matching `package.json`, such as `v6.0.0`. The workflow publishes CI's tested tarball after the environment is approved. Prereleases, backports, and automatic GitHub release creation are outside this workflow's scope.
+
 ## License
 
 MIT
