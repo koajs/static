@@ -9,6 +9,11 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: release
+  queue: max
+  cancel-in-progress: false
+
 jobs:
   ci:
     uses: ./.github/workflows/ci.yml
@@ -17,10 +22,9 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     environment: npm-publish
-    concurrency:
-      group: npm-publish
-      queue: max
-      cancel-in-progress: false
+    outputs:
+      commit: ${{ steps.release-commit.outputs.sha }}
+      latest: ${{ steps.npm-publish.outputs.latest }}
     permissions:
       contents: read
       id-token: write
@@ -29,11 +33,13 @@ jobs:
         with:
           fetch-depth: 0
       - name: Check release commit is on master
+        id: release-commit
         run: |
           if ! git merge-base --is-ancestor HEAD origin/master; then
             echo "::error::Release commit must be on master" >&2
             exit 1
           fi
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 26
@@ -48,8 +54,19 @@ jobs:
       - run: npm install --global npm@12.2.2
       - run: npm ci --ignore-scripts
       - name: Publish to npm
+        id: npm-publish
         run: |
           version="$(node -p "require('./package.json').version")"
+          if newer="$(npm view "koa-static@>$version" version --json 2>/dev/null)"; then
+            latest=false
+          elif jq -e '.error.code == "E404"' <<< "$newer" >/dev/null; then
+            latest=true
+          else
+            printf '%s\n' "$newer" >&2
+            exit 1
+          fi
+          echo "latest=$latest" >> "$GITHUB_OUTPUT"
+
           if metadata="$(npm view "koa-static@$version" --json 2>/dev/null)"; then
             published_commit="$(jq -r 'if type == "array" then .[0].gitHead else .gitHead end // empty' <<< "$metadata")"
             if [ "$published_commit" != "$(git rev-parse HEAD)" ]; then
@@ -63,11 +80,62 @@ jobs:
             printf '%s\n' "$metadata" >&2
             exit 1
           fi
-          if newer="$(npm view "koa-static@>$version" version --json 2>/dev/null)"; then
+          if [ "$latest" = "false" ]; then
             npm publish --tag "maintenance-$version"
-          elif jq -e '.error.code == "E404"' <<< "$newer" >/dev/null; then
-            npm publish
           else
-            printf '%s\n' "$newer" >&2
-            exit 1
+            npm publish
           fi
+
+  github-release:
+    name: Create GitHub release
+    needs: publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    env:
+      TAG: ${{ github.ref_name }}
+      PUBLISHED_COMMIT: ${{ needs.publish.outputs.commit }}
+      MAKE_LATEST: ${{ needs.publish.outputs.latest }}
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Create release
+        timeout-minutes: 2
+        run: |
+          verify_release_commit() {
+            local tag_commit
+            tag_commit="$(gh api "repos/$GH_REPO/commits/refs/tags/$TAG" --jq '.sha')" || return
+            if [ "$tag_commit" != "${PUBLISHED_COMMIT:?published commit is required}" ]; then
+              echo "::error::Tag $TAG no longer points to published commit $PUBLISHED_COMMIT" >&2
+              return 1
+            fi
+          }
+
+          skip_existing_release() {
+            verify_release_commit || return
+            echo "Release $TAG already exists"
+          }
+
+          ensure_release() {
+            local create_status=0
+            if gh release view "$TAG" >/dev/null 2>&1; then
+              skip_existing_release
+              return
+            fi
+
+            verify_release_commit || return
+            gh release create "$TAG" --verify-tag --generate-notes --latest="$MAKE_LATEST" || create_status=$?
+            if [ "$create_status" -eq 0 ]; then
+              verify_release_commit
+              return
+            fi
+
+            if gh release view "$TAG" >/dev/null; then
+              skip_existing_release
+              return
+            fi
+            return "$create_status"
+          }
+
+          ensure_release
