@@ -70,6 +70,10 @@ console.log("listening on port 3000");
 Use Node.js 26. Run `npm run setup` to install dependencies, validate, and install the optional pre-commit hook.
 Run `npm run validate` for lint, types, and tests; `npm run build` emits CommonJS, ESM, and declarations in `dist/`.
 
+### Releases
+
+Push a `vX.Y.Z` tag matching `package.json` on a commit already on `master` to run CI and publish to npm using [trusted publishing](https://docs.npmjs.com/trusted-publishers/).
+
 ## License
 
 MIT

@@ -1,0 +1,73 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+  publish:
+    needs: ci
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    environment: npm-publish
+    concurrency:
+      group: npm-publish
+      queue: max
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Check release commit is on master
+        run: |
+          if ! git merge-base --is-ancestor HEAD origin/master; then
+            echo "::error::Release commit must be on master" >&2
+            exit 1
+          fi
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26
+      - name: Check tag matches package.json
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          stable_version='^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$'
+          if [[ ! "$version" =~ $stable_version || "$GITHUB_REF_NAME" != "v$version" ]]; then
+            echo "::error::Expected a vX.Y.Z tag matching package.json version $version" >&2
+            exit 1
+          fi
+      - run: npm install --global npm@12.2.2
+      - run: npm ci --ignore-scripts
+      - name: Publish to npm
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          if metadata="$(npm view "koa-static@$version" --json 2>/dev/null)"; then
+            published_commit="$(jq -r 'if type == "array" then .[0].gitHead else .gitHead end // empty' <<< "$metadata")"
+            if [ "$published_commit" != "$(git rev-parse HEAD)" ]; then
+              echo "::error::koa-static@$version was published from a different or unknown commit" >&2
+              exit 1
+            fi
+            echo "koa-static@$version is already published from this commit"
+            exit 0
+          fi
+          if ! jq -e '.error.code == "E404"' <<< "$metadata" >/dev/null; then
+            printf '%s\n' "$metadata" >&2
+            exit 1
+          fi
+          if newer="$(npm view "koa-static@>$version" version --json 2>/dev/null)"; then
+            npm publish --tag "maintenance-$version"
+          elif jq -e '.error.code == "E404"' <<< "$newer" >/dev/null; then
+            npm publish
+          else
+            printf '%s\n' "$newer" >&2
+            exit 1
+          fi
