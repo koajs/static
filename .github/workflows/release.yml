@@ -9,6 +9,11 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: release
+  queue: max
+  cancel-in-progress: false
+
 jobs:
   ci:
     uses: ./.github/workflows/ci.yml
@@ -17,10 +22,6 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     environment: npm-publish
-    concurrency:
-      group: npm-publish
-      queue: max
-      cancel-in-progress: false
     permissions:
       contents: read
       id-token: write
@@ -71,3 +72,49 @@ jobs:
             printf '%s\n' "$newer" >&2
             exit 1
           fi
+
+  github-release:
+    name: Create GitHub release
+    needs: publish
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    env:
+      TAG: ${{ github.ref_name }}
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Create release
+        timeout-minutes: 2
+        run: |
+          publish_existing_release() {
+            local is_draft="${1:?draft status is required}"
+            if [ "$is_draft" != "true" ]; then
+              echo "Release $TAG already exists"
+              return 0
+            fi
+            gh release edit "$TAG" --draft=false --verify-tag
+          }
+
+          ensure_release() {
+            local is_draft
+            local create_status=0
+            if is_draft="$(gh release view "$TAG" --json isDraft --jq '.isDraft' 2>/dev/null)"; then
+              publish_existing_release "$is_draft"
+              return
+            fi
+
+            gh release create "$TAG" --verify-tag --generate-notes || create_status=$?
+            if [ "$create_status" -eq 0 ]; then
+              return 0
+            fi
+
+            if is_draft="$(gh release view "$TAG" --json isDraft --jq '.isDraft')"; then
+              publish_existing_release "$is_draft"
+              return
+            fi
+            return "$create_status"
+          }
+
+          ensure_release
